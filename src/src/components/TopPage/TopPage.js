@@ -6,8 +6,9 @@ import  {
 } from 'react-onsenui'
 
 import BikersList from "../Commons/BikersList"
+import RoundButton from "../Commons/RoundButton"
 import HeaderPage from "../../containers/HeaderPage"
-import DetailPage from "../DetailPage"
+import DetailPage from "../../containers/DetailPage"
 import constants from "../../utils/constants"
 
 
@@ -20,7 +21,6 @@ export default class TopPage extends Component {
       index: 0,
       items: ["#ccc", "#ddd", "#fff"],
       testImgSrc: "",
-      menuIsOpen: false,
     }
 
     this.onPictureSelectClick = this.onPictureSelectClick.bind(this)
@@ -28,11 +28,6 @@ export default class TopPage extends Component {
     this.onBikersListItemClick = this.onBikersListItemClick.bind(this)
     this.onSearchButtonClick = this.onSearchButtonClick.bind(this)
     this.onPlusButtonClick = this.onPlusButtonClick.bind(this)
-
-    this.showMenu = this.showMenu.bind(this)
-    this.hideMenu = this.hideMenu.bind(this)
-
-    console.log(this.props)
   }
 
   componentWillMount(){
@@ -44,6 +39,7 @@ export default class TopPage extends Component {
     alert("onpicture select")
 
     try{
+      console.log(navigator)
       navigator.camera.getPicture(
         (base64img)=> {
           alert("get picture ok")
@@ -63,7 +59,7 @@ export default class TopPage extends Component {
     }
     catch(e){
       alert("error...")
-      alert(JSON.stringify(e))
+      console.log(e)
     }
 
   }
@@ -108,18 +104,6 @@ export default class TopPage extends Component {
     })
   }
 
-  showMenu(){
-    this.setState({
-      menuIsOpen: true
-    })
-  }
-
-  hideMenu(){
-    this.setState({
-      menuIsOpen: false
-    })
-  }
-
   render() {
 
     const dispDefNewItems = {left: "type", center: "title", right: "timestamp"}
@@ -127,7 +111,7 @@ export default class TopPage extends Component {
     return (
       <Page>
         <Toolbar>
-          <div className="left" onClick={()=> this.setState({menuIsOpen: !this.state.menuIsOpen})}>
+          <div className="left" onClick={()=> this.props.toggleMenu()}>
           <span className="toolbar-button">
             <i className="ion-navicon"></i>
           </span>
@@ -163,12 +147,7 @@ export default class TopPage extends Component {
           <h3>New Articles</h3>
 
           <span className="">
-            <Fab
-              style={{backgroundColor: ons.platform.isIOS() ? '#4282cc' : null}}
-              onClick={this.onPlusButtonClick}
-              position='bottom right'>
-              <Icon icon='fa-plus' />
-            </Fab>
+            <RoundButton onButtonClick={this.onPlusButtonClick} />
           </span>
 
           <BikersList

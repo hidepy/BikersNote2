@@ -3,7 +3,8 @@ import ons from "onsenui"
 import  {Page, Button, List, ListItem, Toolbar, BackButton} from 'react-onsenui'
 
 import BikersList from "../Commons/BikersList"
-import DetailPage from "../DetailPage"
+import RoundButton from "../Commons/RoundButton"
+import DetailPage from "../../containers/DetailPage"
 
 export default class HeaderPage extends Component {
 
@@ -15,6 +16,7 @@ export default class HeaderPage extends Component {
 
   // 画面表示直前に、前画面から受け取ったパラメータでリストを検索する
   componentWillMount(){
+
     this.props.searchItems({
       type: this.props.params.listType,
     })
@@ -46,28 +48,15 @@ export default class HeaderPage extends Component {
           <div className="center">{this.props.title}</div>
         </Toolbar>
 
-        <Button onClick={this.props.onClick}>Tap me!!</Button>
+        <RoundButton onButtonClick={this.onPlusButtonClick} />
 
-        <BikersList
-          items={this.props.HeaderPage.generalList || []}
-          dispDef={this.props.HeaderPage.generalListDispDef}
-          onItemClick={this.onListItemClick}
-         />
-
-{/*
-        <List dataSource={this.props.HeaderPage.generalList || []}
-          renderRow={(row, i)=> (
-            <ListItem key={i} onClick={this.props.onClick}>
-              <div className='left'>
-                {row.age}
-              </div>
-              <div className='center'>
-                {row.name}
-              </div>
-            </ListItem>
-          )}
-        />
-*/}
+        <section>
+          <BikersList
+            items={this.props.HeaderPage.generalList || []}
+            dispDef={this.props.HeaderPage.generalListDispDef}
+            onItemClick={this.onListItemClick}
+           />
+        </section>
       </Page>
 
     );

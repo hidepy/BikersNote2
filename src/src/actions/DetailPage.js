@@ -1,3 +1,4 @@
+import LocalStorageManager from "../utils/LocalStorageManager"
 
 function receiveItems(list, dispDef){
   return {
@@ -6,11 +7,21 @@ function receiveItems(list, dispDef){
 }
 
 export default{
-  searchItems: (params)=> {
+  saveItem: (storageKey, item, key)=> {
     return dispatch=> {
-      // localstorageなどから値を取得
 
-      dispatch(receiveItems(list, dispDef))
+//static setData(storageKey, isArr, item, itemKey){
+
+      if(!key){
+        // 新規登録
+        key = Date.now()
+      }
+
+      item.key = key
+
+      LocalStorageManager.setData(storageKey, true, item)
+
+      //dispatch(receiveItems(list, dispDef))
     }
   },
 }

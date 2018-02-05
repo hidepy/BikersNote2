@@ -1,33 +1,98 @@
 import React, { Component } from 'react'
 import ons from "onsenui"
-import  {Page, Button, Navigator} from 'react-onsenui'
+import  {Page, Button, Navigator, Splitter, SplitterSide, SplitterContent, List, ListItem, } from 'react-onsenui'
 
+import constants from "../utils/constants"
 import HeaderPage from "../containers/HeaderPage"
 import TopPage from "../containers/TopPage"
+
+// [参考]Navigator & SplitterMenu：https://onsen.io/playground/?framework=react&category=common%20patterns&module=splitter_navigator
 
 class AppRoot extends Component {
 
   constructor(props){
     super(props)
 
-    this.onClick = this.onClick.bind(this)
+    this.state = {
+      isMenuOpen: false,
+    }
+
     this.renderPage = this.renderPage.bind(this)
+    this.loadPage = this.loadPage.bind(this)
+    this.toggleMenu = this.toggleMenu.bind(this)
   }
 
-  onClick(){
-    ons.notification.alert("Hello, World!!")
+  hide() {
+    this.setState({ isMenuOpen: false });
+  }
+
+  show() {
+    this.setState({ isMenuOpen: true });
+  }
+
+/*
+  loadPage(page) {
+    this.hide();
+    const currentPage = this.navigator.pages.slice(-1)[0] // --- or [this.navigator.pages.length - 1]
+    if(currentPage.key != page.name){
+      this.navigator.resetPage({ component: page, props: { key: page.name } }, { animation: 'fade' });
+    }
+  }
+  */
+
+  loadPage(pageType) {
+
+    this.hide()
+
+    const currentPage = this.navigator.pages.slice(-1)[0] // --- or [this.navigator.pages.length - 1]
+
+    // Pageにname属性与えておくことが必須のようす。いや、規定であるのか...？
+    /*
+    if(currentPage.key != (page.name + "_" + pageType)){
+      this.navigator.resetPage({ component: page, props: { key: page.name } }, { animation: 'fade' });
+    }
+    */
+
+    this.navigator.pushPage({ component: HeaderPage, params: {listType: pageType}})
+
+    // 直接DetailPageに入ることないので
+    /*
+    this.navigator.resetPage(
+      {
+        component: HeaderPage,
+        props: {
+          //key: page.name,
+        },
+        params: {
+          listType: pageType
+        }
+      },
+      {
+        animation: 'fade'
+      },
+    )
+    */
+
+  }
+
+  toggleMenu(nextState){
+    console.log("in toggleMenu")
+    this.setState({
+      isMenuOpen: (nextState === undefined ? !this.state.isMenuOpen : nextState)
+    })
   }
 
   renderPage(route, navigator) {
-
+console.log(route)
+console.log(route.params)
     // 現在のページのpropsがあればpropsを代入する。
     const props = route.props || {};
     // 現在のnavigatorオブジェクトをprops.navigatorに代入する。
     props.navigator = navigator;
     // keyが無いとReactに怒られる為、routeオブジェクトに代入したtitleを一意の値として渡す。
     props.key = route.title;
-
-    props.mytest = "testdesu"
+    // メニュー表示切替メソッドを子供に渡しておく
+    props.toggleMenu = this.toggleMenu;
 
     // createElementで仮想DOMを作成する。
     //return React.createElement(route.component, props);
@@ -36,15 +101,24 @@ class AppRoot extends Component {
 
   render(){
     return (
-      <Navigator
-        animation="slide"
-        swipeable
-        renderPage={this.renderPage}
-        initialRoute={{
-          title: 'First page',
-          component: TopPage//HeaderPage
-        }}
-      />
+      <Splitter>
+        <SplitterSide side='right' width={220} collapse={true} swipeable={true} isOpen={this.state.isMenuOpen} onClose={this.hide.bind(this)} onOpen={this.show.bind(this)}>
+          <Page>
+            <List>
+              <ListItem key={HeaderPage.name + "_" + constants.PAGE_TYPE.BIKERS_LIST } onClick={this.loadPage.bind(HeaderPage, constants.PAGE_TYPE.BIKERS_LIST)}  tappable>記事一覧</ListItem>
+              <ListItem key={HeaderPage.name + "_" + constants.PAGE_TYPE.MACHINE_LIST} onClick={this.loadPage.bind(HeaderPage, constants.PAGE_TYPE.MACHINE_LIST)} tappable>機体一覧</ListItem>
+              <ListItem key={HeaderPage.name + "_" + constants.PAGE_TYPE.MASTER_LIST } onClick={this.loadPage.bind(HeaderPage, constants.PAGE_TYPE.MASTER_LIST)}  tappable>マスタ設定</ListItem>
+            </List>
+          </Page>
+        </SplitterSide>
+        <SplitterContent>
+          <Navigator
+            initialRoute={{ component: TopPage, title: "TopPage" }}
+            renderPage={this.renderPage}
+            ref={(navigator) => { this.navigator = navigator; }}
+          />
+        </SplitterContent>
+      </Splitter>
     );
   }
 }

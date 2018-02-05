@@ -28,51 +28,7 @@ const store = finalCreateStore(reducer)
 document.addEventListener(window.device ? 'deviceready' : 'DOMContentLoaded', function(){
   // 色々終わったらonsenのロード待ちしてからAppRootを生成(reduxでラップされた)
 
-//alert("before ons ready")
-
   ons.ready(function() {
-
-    /*
-    window.localStorage[constants.LOCAL_STORAGE_NAME.BIKERS_LIST] = JSON.stringify([
-      {
-        type: constants.ARTICLE_TYPE.MAINTAINANCE,
-        title: "たいとる1",
-        date: "2018/02/04",
-        comment: "これはコメント",
-        img: [],
-        url: "",
-        place: "",
-        price: 1980,
-        tag: [],
-        part: "",
-      },
-      {
-        type: constants.ARTICLE_TYPE.MAINTAINANCE,
-        title: "たいとる2",
-        date: "2018/02/03",
-        comment: "これはコメント2",
-        img: [],
-        url: "",
-        place: "",
-        price: 1980,
-        tag: [],
-        part: "",
-      },
-      {
-        type: constants.ARTICLE_TYPE.MAINTAINANCE,
-        title: "たいとる3",
-        date: "2018/02/02",
-        comment: "これはコメント3",
-        img: [],
-        url: "",
-        place: "",
-        price: 1980,
-        tag: [],
-        part: "",
-      },
-    ])*/
-
-//alert("in ons ready")
 
     ReactDOM.render(
       <Provider store={store}>
