@@ -16,8 +16,10 @@ function mapDispatchToProps(dispatch){
   return {
     // keyが渡されない場合は新規として扱う
     saveItem: (storageKey, item, key)=> {
-      console.log("insaveitem containers")
       dispatch(AppActions.saveItem(storageKey, item, key))
+    },
+    deleteItem: (storageKey, key)=> {
+      dispatch(AppActions.deleteItem(storageKey, key))
     },
   }
 }

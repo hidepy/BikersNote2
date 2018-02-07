@@ -1,15 +1,13 @@
 import React, { Component } from 'react'
-import ons from "onsenui"
-import  {
-  Page, Button, Toolbar, BackButton, Carousel, CarouselItem, Fab, Icon, List, ListItem,
-   Splitter, SplitterSide, SplitterContent
-} from 'react-onsenui'
+//import ons from "onsenui"
+import  { Page, Button, Toolbar, Carousel, CarouselItem } from 'react-onsenui'
 
 import BikersList from "../Commons/BikersList"
 import RoundButton from "../Commons/RoundButton"
 import HeaderPage from "../../containers/HeaderPage"
 import DetailPage from "../../containers/DetailPage"
 import constants from "../../utils/constants"
+import CommonFunc from "../../utils/CommonFunc"
 
 
 export default class TopPage extends Component {
@@ -36,10 +34,10 @@ export default class TopPage extends Component {
   }
 
   onPictureSelectClick(){
-    alert("onpicture select")
-
+    CommonFunc.getPicture()
+      .then(blob=> (this.state.testImgSrc = "data:image/jpeg;base64," + blob))
+    /*
     try{
-      console.log(navigator)
       navigator.camera.getPicture(
         (base64img)=> {
           alert("get picture ok")
@@ -61,7 +59,7 @@ export default class TopPage extends Component {
       alert("error...")
       console.log(e)
     }
-
+    */
   }
 
   onCarouselChange(e){

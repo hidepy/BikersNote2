@@ -1,7 +1,3 @@
-import constants from "../utils/constants"
-
-//name, img, purchace_date, maker, current_distance
-
 export default class Machine{
 
   // 使用することは無いと思うが, プロパティ一覧を把握するため

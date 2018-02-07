@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import ons from "onsenui"
-import  {Page, Button, Navigator, Splitter, SplitterSide, SplitterContent, List, ListItem, } from 'react-onsenui'
+//import ons from "onsenui"
+import  {Page, Navigator, Splitter, SplitterSide, SplitterContent, List, ListItem, } from 'react-onsenui'
 
 import constants from "../utils/constants"
 import HeaderPage from "../containers/HeaderPage"

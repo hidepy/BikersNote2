@@ -34,5 +34,8 @@ export default {
   },
   MASTER_SETTINGS: [
 
-  ]
+  ],
+  MESSAGES: {
+    CONFIRM_DELETE: "データを削除します。よろしいですか？",
+  },
 }

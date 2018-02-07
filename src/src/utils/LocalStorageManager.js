@@ -18,16 +18,19 @@ export default class LocalStorageManager{
     return data[itemKey]
   }
 
-  // Hashの場合は{}をデフォルト, Arrayの場合は[]をデフォルト
-  static setData(storageKey, isArr, item, itemKey){
-    let data = LocalStorageManager.getDataAll(storageKey) || (isArr ? [] : {})
+  // Arrayはサポートしない. 複数条件でソートしたりすんで...hashでいく
+  static setData(storageKey, item, itemKey){
+    let data = LocalStorageManager.getDataAll(storageKey) || {}
 
-    if(!isArr){
-      data[itemKey] = item
-    }
-    else{
-      data.push(item)
-    }
+    data[itemKey] = item
+
+    window.localStorage[storageKey] = JSON.stringify(data)
+  }
+
+  static delData(storageKey, itemKey){
+    let data = LocalStorageManager.getDataAll(storageKey) || {}
+
+    delete data[itemKey]
 
     window.localStorage[storageKey] = JSON.stringify(data)
   }

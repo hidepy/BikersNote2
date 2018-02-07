@@ -30,7 +30,7 @@ export default class Article{
       { propName: "title", title: "タイトル", inputType: "text", ref: "article-title"},
       { propName: "date", title: "日付", inputType: "date", ref: "article-date"},
       { propName: "comment", title: "コメント", inputType: "textarea", ref: "article-comment"},
-      { propName: "img", title: "画像", inputType: "img", ref: "article-img", multi: true },
+      { propName: "img", title: "画像", inputType: "img", ref: "article-img", multi: true, values: [] },
       { propName: "url", title: "参考URL", inputType: "text", ref: "article-url"},
       { propName: "place", title: "場所", inputType: "map", ref: "article-place", multi: true, useType: [
         constants.ARTICLE_TYPE.TOURING, constants.ARTICLE_TYPE.EVENT

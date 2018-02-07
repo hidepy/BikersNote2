@@ -1,6 +1,6 @@
 import {connect} from "react-redux"
 import App from "../components/AppRoot"
-import AppActions from "../actions/AppRoot"
+//import AppActions from "../actions/AppRoot"
 
 // stateを繋ぐ
 function mapStateToProps(state){

@@ -1,3 +1,7 @@
 .empty-list::after{
   content: 'データがありません'
 }
+
+.toolbar{
+  position: relative !important;
+}

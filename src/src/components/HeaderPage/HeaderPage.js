@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import ons from "onsenui"
-import  {Page, Button, List, ListItem, Toolbar, BackButton} from 'react-onsenui'
+//import ons from "onsenui"
+import  {Page, Toolbar, BackButton} from 'react-onsenui'
 
 import BikersList from "../Commons/BikersList"
 import RoundButton from "../Commons/RoundButton"
@@ -12,6 +12,7 @@ export default class HeaderPage extends Component {
     super(props)
 
     this.onListItemClick = this.onListItemClick.bind(this)
+    this.onPlusButtonClick = this.onPlusButtonClick.bind(this)
   }
 
   // 画面表示直前に、前画面から受け取ったパラメータでリストを検索する
@@ -19,6 +20,17 @@ export default class HeaderPage extends Component {
 
     this.props.searchItems({
       type: this.props.params.listType,
+    })
+  }
+
+  onPlusButtonClick(){
+    this.props.navigator.pushPage({
+      component: DetailPage,
+      title: '追加',
+      params: {
+        listType: this.props.params.listType,
+        isUpdateScreen: true
+      }
     })
   }
 
