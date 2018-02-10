@@ -18,6 +18,8 @@ export default class HeaderPage extends Component {
   // 画面表示直前に、前画面から受け取ったパラメータでリストを検索する
   componentWillMount(){
 
+    //props.params.searchCondition も受け取る
+
     this.props.searchItems({
       type: this.props.params.listType,
     })
@@ -61,6 +63,10 @@ export default class HeaderPage extends Component {
         </Toolbar>
 
         <RoundButton onButtonClick={this.onPlusButtonClick} />
+
+        <section>
+        {}
+        </section>
 
         <section>
           <BikersList

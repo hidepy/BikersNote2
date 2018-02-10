@@ -10,6 +10,7 @@ function mapStateToProps(state){
 // actionを繋ぐ
 function mapDispatchToProps(dispatch){
   return {
+
   }
 }
 

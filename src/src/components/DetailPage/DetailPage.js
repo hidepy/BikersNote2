@@ -26,10 +26,14 @@ export default class DetailPage extends Component {
 
       this.state = {
         inputItemDef: [],
-        item: props.params.selectedItem,
+        item: props.params.selectedItem || {},
         isUpdateScreen: !!this.props.params.isUpdateScreen,
+
+        _updateFlg: false
       }
 
+console.log("in constructor selectedItem")
+console.log(props.params.selectedItem)
       // LocalStorageの保存先をリストタイプから判定
       this.storageType =
         this.props.params.listType === constants.PAGE_TYPE.BIKERS_LIST ? constants.LOCAL_STORAGE_NAME.BIKERS_LIST
@@ -39,6 +43,8 @@ export default class DetailPage extends Component {
       this.onEditButtonClick = this.onEditButtonClick.bind(this)
       this.onDeleteButtonClick = this.onDeleteButtonClick.bind(this)
       this.setValues2InputElement = this.setValues2InputElement.bind(this)
+
+      this.onStateClick = this.onStateClick.bind(this)
   }
 
   componentWillMount(){
@@ -51,8 +57,19 @@ export default class DetailPage extends Component {
     }
     const defObj = DEF_OBJ[this.props.params.listType]
 
+    let inputItemDef = defObj.getDefinition()
+    inputItemDef = inputItemDef.map(v=> {
+      if(v.inputType == "img"){
+        v.tmpImages = this.state.item[v.propName]
+      }
+
+      return v
+    })
+
+console.log(inputItemDef)
+
     this.setState({
-      inputItemDef: defObj.getDefinition()
+      inputItemDef: inputItemDef
     })
   }
 
@@ -65,13 +82,38 @@ export default class DetailPage extends Component {
     }
   }
 
+  // storageから取得してきた値を画面項目にバインド
   setValues2InputElement(){
 
+    /*
     Object.keys(this.refs || {})
       .forEach(key=> {
         const propName = key.replace(this.refPrefix, "")
         this.refs[key].value = this.state.item[propName]
       })
+    */
+
+    this.state.inputItemDef.forEach(v=> {
+      if(v.inputType == "img"){
+        /*
+        item[v.ref] =
+          Array.prototype.slice.call(document.querySelectorAll("#images-" + v.ref + " img"))
+            .map(elImg=> elImg.getAttribute("src"))
+        */
+
+        v.tmpImages = this.state.item[v.propName]
+
+      }
+      else{
+        // 値をinpuタグにコピー
+        this.refs[v.ref].value = this.state.item[v.propName]
+      }
+    })
+
+    // 強制再描画
+    this.setState({
+      _updateFlg: !this.state._updateFlg
+    })
   }
 
   onEditButtonClick(){
@@ -91,9 +133,30 @@ export default class DetailPage extends Component {
 
         // itemを組み立てる
         let item = {}
+        /*
         Object.keys(this.refs || {}).forEach(key=> {
           item[key.replace(this.refPrefix, "")] = this.refs[key].value
         })
+        */
+        // 入力定義分だけループして組み立てる
+        this.state.inputItemDef.forEach(v=> {
+          //item[v.propName]
+
+          // imgの場合, 対象画像を全て抜き出してsrcをデータとして保存
+          if(v.inputType == "img"){
+            item[v.propName] =
+              Array.prototype.slice.call(document.querySelectorAll("#images-" + v.ref + " img"))
+                .map(elImg=> elImg.getAttribute("src"))
+          }
+          else{
+            // それ以外の場合は、値をそのままセット
+            item[v.propName] = this.refs[v.ref].value
+          }
+
+        })
+
+console.log("before item save")
+console.log(item)
 
         // 値をstorageに保存する
         this.props.saveItem(this.storageType, item, this.state.item ? this.state.item.key : null)
@@ -110,16 +173,36 @@ export default class DetailPage extends Component {
     })
   }
 
+onStateClick(){
+  console.log(this.state)
+  alert("out state")
+}
+
   render() {
     const screenType = this.state.isUpdateScreen ? 1 : 0; // 0参照, 1更新
 
-    const createItem = (v)=> { // v has title,inputType, value, ref
+    const defaultWidth = "160px"
+    const defaultHeight = "120px"
+
+    const createItem = (v, i)=> { // v has title,inputType, value, ref
       if(screenType == 0){
         switch(v.inputType){
           case "img": {
-            const width = v.width || "320px"
-            const height = v.height || "240px"
-            return (<img src={this.state.item[v["propName"]]} width={width} height={height} />)
+            const width = v.width || defaultWidth
+            const height = v.height || defaultHeight
+
+console.log("in createItem img")
+console.log(this.state.item)
+
+            return (
+              <div>
+              {
+                (this.state.item[v["propName"]] || []).map(imgData=> {
+                  return (<img src={imgData} width={width} height={height} />)
+                })
+              }
+              </div>
+            )
           }
 
           default: {
@@ -146,14 +229,45 @@ export default class DetailPage extends Component {
                         .then(base64img=> {
                           alert("select ok!!")
                           console.log("in CommonFunc.getPicture callback")
-                          v.values.push("data:image/jpeg;base64," + base64img)
-                          console.log(v.values.length)
+                          //v.values.push("data:image/jpeg;base64," + base64img)
+                          //v.values.push(base64img)
+
+                          let updatedDef = this.state.inputItemDef
+
+console.log(updatedDef[i])
+
+                          if(!updatedDef[i].tmpImages){
+                            updatedDef[i].tmpImages = []
+                          }
+                          updatedDef[i].tmpImages.push(base64img)
+
+                          this.setState({
+                            //temprul: updatedDef[i].tmpImages,
+                            inputItemDef: updatedDef,
+                            //_updateFlg: !this.state._updateFlg,
+                          })
                         })
                   }>画像選択</Button>
                 </div>
                 <div id={"images-" + v.ref}>
                   {
-                    (v.values || []).map(url=> (<img src={url} />))
+                    (v.tmpImages || []).map((url, j)=> {
+                    //(this.state.temprul || []).map(url=> {
+                      //console.log(url)
+                      return (
+                        <div key={j} id={"images-" + v.ref + "-" + j} style={{position: "relative"}}>
+                          <img src={url} width={v.width || defaultWidth} height={v.height || defaultHeight} />
+                          <RoundButton onButtonClick={()=> {
+                            console.log("RoundButton trash pushed")
+                            let updatedDef = this.state.inputItemDef
+                            updatedDef[i].tmpImages.splice(j, 1)
+                            this.setState({
+                              inputItemDef: updatedDef,
+                            })
+                          }} iconName="fa-trash" />
+                        </div>
+                      )
+                    })
                   }
                 </div>
               </div>
@@ -174,6 +288,8 @@ export default class DetailPage extends Component {
             <BackButton>Back</BackButton>
           </div>
         </Toolbar>
+
+<Button onClick={this.onStateClick}>state</Button>
 
         <RoundButton
           onButtonClick={this.onEditButtonClick}
@@ -204,7 +320,7 @@ export default class DetailPage extends Component {
                       {
                         // 定義のプロパティ名
                         //(screenType == 0) ? (<div>{v["propName"]}</div>) : (<input ref={v.ref} />)
-                        createItem(v)
+                        createItem(v, i)
                       }
                     </Col>
                   </Row>

@@ -14,16 +14,27 @@ export default class CommonFunc{
     })
   }
 
-  static obj2SortedArr(obj, compKey, isDesc){console.log()
+  static obj2SortedArr(obj, compKey, isDesc){
     return CommonFunc.sortObjArr(CommonFunc.obj2Arr(obj), compKey, isDesc)
   }
 
-  static getPicture(){
+  static getPicture(params){
     return new Promise(function(resolve, reject){
       try{
+
+        if(!params){
+          params = {}
+        }
+
         navigator.camera.getPicture(
           (base64img)=> {
             //this.state.testImgSrc = "data:image/jpeg;base64," + base64img;
+
+            // base64の場合は、それを示すプレフィックスをつけておく
+            if((params.destinationType || window.Camera.DestinationType.DATA_URL) == window.Camera.DestinationType.DATA_URL){
+              base64img = "data:image/jpeg;base64," + base64img
+            }
+
             resolve(base64img)
           },
           function(err){
@@ -32,10 +43,10 @@ export default class CommonFunc{
               reject(err)
           },
           {
-              quality: 50,
-              destinationType: 0,//Camera.DestinationType.DATA_URL,
-              //destinationType: window.Camera.DestinationType.FILE_URI,
-              sourceType: navigator.camera.PictureSourceType.SAVEDPHOTOALBUM
+              quality: params.quality || 50,
+              destinationType: params.destinationType || window.Camera.DestinationType.DATA_URL,
+              //destinationType: params.destinationType || window.Camera.DestinationType.FILE_URI,
+              sourceType: params.sourceType || navigator.camera.PictureSourceType.SAVEDPHOTOALBUM,
           }
         )
       }

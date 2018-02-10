@@ -22,21 +22,21 @@ export default class Article{
   // DetailPageで使用する型定義情報を取得する
   static getDefinition(type){
     const commonDef = [
-      { propName: "target", title: "機体", inputType: "select", ref: "article-target", selectList: []},
-      { propName: "type", title: "タイプ", inputType: "select", ref: "article-type", selectList: []},
+      { propName: "target", title: "機体", inputType: "select", ref: "article-target", selectList: [], searchType: "select"},
+      { propName: "type", title: "タイプ", inputType: "select", ref: "article-type", selectList: [], searchType: "select"},
       { propName: "part", title: "部位", inputType: "select", ref: "article-part", useType: [
         constants.ARTICLE_TYPE.MAINTAINANCE, constants.ARTICLE_TYPE.CUSTOM
-      ]},
-      { propName: "title", title: "タイトル", inputType: "text", ref: "article-title"},
-      { propName: "date", title: "日付", inputType: "date", ref: "article-date"},
+      ], searchType: "select"},
+      { propName: "title", title: "タイトル", inputType: "text", ref: "article-title", searchType: "fuzzy"},
+      { propName: "date", title: "日付", inputType: "date", ref: "article-date", searchType: "date"},
       { propName: "comment", title: "コメント", inputType: "textarea", ref: "article-comment"},
-      { propName: "img", title: "画像", inputType: "img", ref: "article-img", multi: true, values: [] },
+      { propName: "img", title: "画像", inputType: "img", ref: "article-img", multi: true, tmpImages: [] },
       { propName: "url", title: "参考URL", inputType: "text", ref: "article-url"},
       { propName: "place", title: "場所", inputType: "map", ref: "article-place", multi: true, useType: [
         constants.ARTICLE_TYPE.TOURING, constants.ARTICLE_TYPE.EVENT
       ]},
       { propName: "price", title: "かかった費用", inputType: "number", ref: "article-price"},
-      { propName: "tag", title: "タグ", inputType: "tag", ref: "article-tag", multi: true },
+      { propName: "tag", title: "タグ", inputType: "tag", ref: "article-tag", multi: true , searchType: "select"},
 
       { propName: "distance", title: "前回給油からの走行距離", inputType: "number", ref: "article-distance", useType: [
         constants.ARTICLE_TYPE.NENPI
