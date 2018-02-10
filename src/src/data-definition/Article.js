@@ -1,4 +1,6 @@
 import constants from "../utils/constants"
+import CommonFunc from "../utils/CommonFunc"
+import MasterDataManager from "../utils/MasterDataManager"
 
 export default class Article{
 
@@ -21,12 +23,13 @@ export default class Article{
 
   // DetailPageで使用する型定義情報を取得する
   static getDefinition(type){
+
     const commonDef = [
-      { propName: "target", title: "機体", inputType: "select", ref: "article-target", selectList: [], searchType: "select"},
-      { propName: "type", title: "タイプ", inputType: "select", ref: "article-type", selectList: [], searchType: "select"},
+      { propName: "target", title: "機体", inputType: "select", ref: "article-target", selectList: MasterDataManager.getMachinesNVPair(), searchType: "selection"},
+      { propName: "type", title: "タイプ", inputType: "select", ref: "article-type", selectList: MasterDataManager.getArticleTypeNVPair(), searchType: "selection"},
       { propName: "part", title: "部位", inputType: "select", ref: "article-part", useType: [
         constants.ARTICLE_TYPE.MAINTAINANCE, constants.ARTICLE_TYPE.CUSTOM
-      ], searchType: "select"},
+      ], selectList: MasterDataManager.getParts(), searchType: "selection"},
       { propName: "title", title: "タイトル", inputType: "text", ref: "article-title", searchType: "fuzzy"},
       { propName: "date", title: "日付", inputType: "date", ref: "article-date", searchType: "date"},
       { propName: "comment", title: "コメント", inputType: "textarea", ref: "article-comment"},
@@ -36,7 +39,7 @@ export default class Article{
         constants.ARTICLE_TYPE.TOURING, constants.ARTICLE_TYPE.EVENT
       ]},
       { propName: "price", title: "かかった費用", inputType: "number", ref: "article-price"},
-      { propName: "tag", title: "タグ", inputType: "tag", ref: "article-tag", multi: true , searchType: "select"},
+      { propName: "tag", title: "タグ", inputType: "tag", ref: "article-tag", multi: true, selectList: [], searchType: "selection"},
 
       { propName: "distance", title: "前回給油からの走行距離", inputType: "number", ref: "article-distance", useType: [
         constants.ARTICLE_TYPE.NENPI
@@ -51,6 +54,7 @@ export default class Article{
     ]
 
     // 取得対象のtypeが絞られていない場合は全件返却
+    /*
     if(!type){
       return commonDef
     }
@@ -61,5 +65,27 @@ export default class Article{
         .filter(v=> {
           return (!v.useType || (v.useType.filter(s=> s == type).length > 1 ))
         })
+    */
+    return Article.filterDefinition(commonDef, type)
+  }
+
+  static filterDefinition(definitions, type){
+
+console.log(definitions)
+console.log(type)
+
+    if(!type){
+      return definitions
+    }
+
+    const res =
+      (definitions || [])
+        .filter(v=> {
+          return (!v.useType || (v.useType.filter(s=> s == type).length > 1 ))
+        })
+
+    console.log(res)
+
+    return res
   }
 }

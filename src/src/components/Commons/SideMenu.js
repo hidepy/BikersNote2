@@ -30,7 +30,6 @@ export default class SideMenu extends Component {
       >
         <Page>
           <List
-            dataSource={['Profile', 'Followers', 'Settings']}
             renderRow={(title) => (
               <ListItem key={title} onClick={this.hide} tappable>{title}</ListItem>
             )}

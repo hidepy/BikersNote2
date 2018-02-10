@@ -53,7 +53,16 @@ class AppRoot extends Component {
     }
     */
 
-    this.navigator.pushPage({ component: HeaderPage, params: {listType: pageType}})
+console.log("in loadpage")
+
+    this.navigator.pushPage(
+      {
+        component: HeaderPage,
+        params: {
+          listType: pageType,
+        }
+      }
+    )
 
     // 直接DetailPageに入ることないので
     /*
@@ -93,6 +102,10 @@ console.log(route.params)
     props.key = route.title;
     // メニュー表示切替メソッドを子供に渡しておく
     props.toggleMenu = this.toggleMenu;
+
+    if(!!route.params && (route.listType === constants.BIKERS_LIST)){
+      route.params["isSearchConditionAreaShown"] = true
+    }
 
     // createElementで仮想DOMを作成する。
     //return React.createElement(route.component, props);

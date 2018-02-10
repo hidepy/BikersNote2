@@ -7,6 +7,7 @@ import  {Page, Toolbar, BackButton, Button, Row, Col} from 'react-onsenui'
 import constants from "../../utils/constants"
 import CommonFunc from "../../utils/CommonFunc"
 import RoundButton from "../Commons/RoundButton"
+import SelectByList from "../Commons/SelectByList"
 import ArticleDef from "../../data-definition/Article"
 import MachineDef from "../../data-definition/Machine"
 import MasterDef from "../../data-definition/Machine"
@@ -28,12 +29,13 @@ export default class DetailPage extends Component {
         inputItemDef: [],
         item: props.params.selectedItem || {},
         isUpdateScreen: !!this.props.params.isUpdateScreen,
-
+        defClass: null,
         _updateFlg: false
       }
 
-console.log("in constructor selectedItem")
-console.log(props.params.selectedItem)
+      // 全入力項目の定義を保存しておく
+      this.inputItemDefAll = []
+
       // LocalStorageの保存先をリストタイプから判定
       this.storageType =
         this.props.params.listType === constants.PAGE_TYPE.BIKERS_LIST ? constants.LOCAL_STORAGE_NAME.BIKERS_LIST
@@ -43,7 +45,7 @@ console.log(props.params.selectedItem)
       this.onEditButtonClick = this.onEditButtonClick.bind(this)
       this.onDeleteButtonClick = this.onDeleteButtonClick.bind(this)
       this.setValues2InputElement = this.setValues2InputElement.bind(this)
-
+      this.onTypeChange = this.onTypeChange.bind(this)
       this.onStateClick = this.onStateClick.bind(this)
   }
 
@@ -57,19 +59,33 @@ console.log(props.params.selectedItem)
     }
     const defObj = DEF_OBJ[this.props.params.listType]
 
+    let inputTypeDef = {}
     let inputItemDef = defObj.getDefinition()
+
     inputItemDef = inputItemDef.map(v=> {
       if(v.inputType == "img"){
         v.tmpImages = this.state.item[v.propName]
       }
 
+      if(v.inputType == "type"){
+        inputTypeDef = v
+      }
+
       return v
     })
 
-console.log(inputItemDef)
+    // 全定義を保存する
+    this.inputItemDefAll = inputItemDef.slice()
+
+    // typeが既に決まっていれば、定義を更新
+    if(this.state.item && this.state.item["type"]){
+      console.log("comes type def change")
+      ArticleDef.filterDefinition(this.inputTypeDefAll, this.state.item["type"])
+    }
 
     this.setState({
-      inputItemDef: inputItemDef
+      inputItemDef: inputItemDef,
+      defClass: defObj,
     })
   }
 
@@ -85,24 +101,12 @@ console.log(inputItemDef)
   // storageから取得してきた値を画面項目にバインド
   setValues2InputElement(){
 
-    /*
-    Object.keys(this.refs || {})
-      .forEach(key=> {
-        const propName = key.replace(this.refPrefix, "")
-        this.refs[key].value = this.state.item[propName]
-      })
-    */
-
     this.state.inputItemDef.forEach(v=> {
       if(v.inputType == "img"){
-        /*
-        item[v.ref] =
-          Array.prototype.slice.call(document.querySelectorAll("#images-" + v.ref + " img"))
-            .map(elImg=> elImg.getAttribute("src"))
-        */
-
         v.tmpImages = this.state.item[v.propName]
-
+      }
+      else if(v.inputType == "select"){
+        document.querySelector("[name=" + v.ref + "]").value = this.state.item[v.propName]
       }
       else{
         // 値をinpuタグにコピー
@@ -133,14 +137,9 @@ console.log(inputItemDef)
 
         // itemを組み立てる
         let item = {}
-        /*
-        Object.keys(this.refs || {}).forEach(key=> {
-          item[key.replace(this.refPrefix, "")] = this.refs[key].value
-        })
-        */
+
         // 入力定義分だけループして組み立てる
         this.state.inputItemDef.forEach(v=> {
-          //item[v.propName]
 
           // imgの場合, 対象画像を全て抜き出してsrcをデータとして保存
           if(v.inputType == "img"){
@@ -148,15 +147,17 @@ console.log(inputItemDef)
               Array.prototype.slice.call(document.querySelectorAll("#images-" + v.ref + " img"))
                 .map(elImg=> elImg.getAttribute("src"))
           }
+          else if(v.inputType == "select"){
+            console.log(v.ref)
+
+            item[v.propName] = document.querySelector("[name=" + v.ref + "]").value
+          }
           else{
             // それ以外の場合は、値をそのままセット
             item[v.propName] = this.refs[v.ref].value
           }
 
         })
-
-console.log("before item save")
-console.log(item)
 
         // 値をstorageに保存する
         this.props.saveItem(this.storageType, item, this.state.item ? this.state.item.key : null)
@@ -173,26 +174,43 @@ console.log(item)
     })
   }
 
-onStateClick(){
-  console.log(this.state)
-  alert("out state")
-}
+  onTypeChange(definition, value){
+
+
+    if(definition.propName === "type"){
+      // 画面の表示項目を変更する
+      const newDef = ArticleDef.filterDefinition(this.inputItemDefAll, value)
+
+      // 強制再描画
+      this.setState({
+        _updateFlg: !this.state._updateFlg,
+        inputItemDef: newDef,
+      })
+    }
+  }
+
+  onStateClick(){
+    console.log(this.state)
+    alert("out state")
+  }
 
   render() {
+
+console.log("in render")
+console.log(this.state.inputItemDef)
+
     const screenType = this.state.isUpdateScreen ? 1 : 0; // 0参照, 1更新
 
     const defaultWidth = "160px"
     const defaultHeight = "120px"
 
     const createItem = (v, i)=> { // v has title,inputType, value, ref
+
       if(screenType == 0){
         switch(v.inputType){
           case "img": {
             const width = v.width || defaultWidth
             const height = v.height || defaultHeight
-
-console.log("in createItem img")
-console.log(this.state.item)
 
             return (
               <div>
@@ -204,7 +222,16 @@ console.log(this.state.item)
               </div>
             )
           }
-
+          case "select": {
+            return (
+              <div>
+              {
+                // selectの場合は値がコードになっているので、名前として解釈する
+                CommonFunc.getNameByValue(this.state.item[v["propName"]], v.selectList)
+              }
+              </div>
+            )
+          }
           default: {
             return (<div>{this.state.item[v["propName"]]}</div>)
           }
@@ -218,7 +245,12 @@ console.log(this.state.item)
           case "date": {
             return (<input ref={v.ref} type="date" />)
           }
-
+          case "select": {
+            // 固定でonchange入れ込んじゃう
+            return (
+              <SelectByList defItem={v} onSelectItemChange={this.onTypeChange } />
+            )
+          }
           case "img": {
             return (
               <div>
@@ -233,8 +265,6 @@ console.log(this.state.item)
                           //v.values.push(base64img)
 
                           let updatedDef = this.state.inputItemDef
-
-console.log(updatedDef[i])
 
                           if(!updatedDef[i].tmpImages){
                             updatedDef[i].tmpImages = []
@@ -297,7 +327,7 @@ console.log(updatedDef[i])
         />
 
         <RoundButton
-          style={
+          customStyle={
             {
               display: (this.state.item && this.state.item.key) ? "inline-block" : "none",
               bottom: "84px",

@@ -5,3 +5,15 @@
 .toolbar{
   position: relative !important;
 }
+
+.hidden{
+  display: none;
+}
+
+.searchConditionArea{
+  
+}
+.searchConditionArea-closed{
+  opacity: 0;
+  height: 0;
+}

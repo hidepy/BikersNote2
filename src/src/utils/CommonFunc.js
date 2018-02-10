@@ -18,6 +18,19 @@ export default class CommonFunc{
     return CommonFunc.sortObjArr(CommonFunc.obj2Arr(obj), compKey, isDesc)
   }
 
+  static getNameByValue(value, list){
+
+    if(!list) return value
+
+    for(let i = 0; i < list.length; i++){
+      if(list[i].value === value){
+        return list[i].name
+      }
+    }
+
+    return value
+  }
+
   static getPicture(params){
     return new Promise(function(resolve, reject){
       try{

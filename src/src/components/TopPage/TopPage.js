@@ -36,30 +36,6 @@ export default class TopPage extends Component {
   onPictureSelectClick(){
     CommonFunc.getPicture()
       .then(blob=> (this.state.testImgSrc = "data:image/jpeg;base64," + blob))
-    /*
-    try{
-      navigator.camera.getPicture(
-        (base64img)=> {
-          alert("get picture ok")
-
-          this.state.testImgSrc = "data:image/jpeg;base64," + base64img;
-        },
-        function(err){
-            console.log("error");
-        },
-        {
-            quality: 50,
-            destinationType: 0,//Camera.DestinationType.DATA_URL,
-            //destinationType: window.Camera.DestinationType.FILE_URI,
-            sourceType: navigator.camera.PictureSourceType.SAVEDPHOTOALBUM
-        }
-      )
-    }
-    catch(e){
-      alert("error...")
-      console.log(e)
-    }
-    */
   }
 
   onCarouselChange(e){
@@ -87,6 +63,7 @@ export default class TopPage extends Component {
       title: '記事一覧',
       params: {
         listType: constants.PAGE_TYPE.BIKERS_LIST,
+        withSearchCondition: true,
       }
     })
   }

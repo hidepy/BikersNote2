@@ -8,6 +8,7 @@ export default class RoundButton extends Component {
   static propTypes = {
     onButtonClick:  PropTypes.func,
     iconName:       PropTypes.string,
+    customStyle:    PropTypes.object,
   }
 
   render() {
@@ -16,7 +17,7 @@ export default class RoundButton extends Component {
       <Fab
         style={{
           backgroundColor: ons.platform.isIOS() ? '#4282cc' : null,
-          ...this.props.style
+          ...this.props.customStyle
         }}
         onClick={this.props.onButtonClick}
         position='bottom right'>
