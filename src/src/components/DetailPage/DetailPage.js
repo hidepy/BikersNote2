@@ -14,6 +14,8 @@ import MasterDef from "../../data-definition/Machine"
 
 export default class DetailPage extends Component {
 
+  static key = "DetailPage"
+
   constructor(props){
       super(props)
 
@@ -59,32 +61,39 @@ export default class DetailPage extends Component {
     }
     const defObj = DEF_OBJ[this.props.params.listType]
 
-    let inputTypeDef = {}
+    //let inputTypeDef = {}
     let inputItemDef = defObj.getDefinition()
 
     inputItemDef = inputItemDef.map(v=> {
       if(v.inputType == "img"){
         v.tmpImages = this.state.item[v.propName]
       }
-
+/*
       if(v.inputType == "type"){
         inputTypeDef = v
       }
-
+*/
       return v
     })
 
     // 全定義を保存する
     this.inputItemDefAll = inputItemDef.slice()
 
+  let updatedItemDef = inputItemDef
+console.log(this.inputItemDefAll)
     // typeが既に決まっていれば、定義を更新
     if(this.state.item && this.state.item["type"]){
       console.log("comes type def change")
-      ArticleDef.filterDefinition(this.inputTypeDefAll, this.state.item["type"])
+      updatedItemDef = ArticleDef.filterDefinition(this.inputItemDefAll, this.state.item["type"])
+    }
+    else{
+      // typeなき場合は、メンテナンスの入力項目を表示しておく
+      updatedItemDef = ArticleDef.filterDefinition(this.inputItemDefAll, constants.ARTICLE_TYPE.MAINTAINANCE)
     }
 
     this.setState({
-      inputItemDef: inputItemDef,
+      //inputItemDef: inputItemDef,
+      inputItemDef: updatedItemDef,
       defClass: defObj,
     })
   }
@@ -110,7 +119,7 @@ export default class DetailPage extends Component {
       }
       else{
         // 値をinpuタグにコピー
-        this.refs[v.ref].value = this.state.item[v.propName]
+        this.refs[v.ref].value = this.state.item[v.propName] || ""
       }
     })
 
@@ -197,7 +206,6 @@ export default class DetailPage extends Component {
   render() {
 
 console.log("in render")
-console.log(this.state.inputItemDef)
 
     const screenType = this.state.isUpdateScreen ? 1 : 0; // 0参照, 1更新
 

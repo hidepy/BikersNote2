@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import ons from "onsenui"
-import  {Fab, Icon} from 'react-onsenui'
 
 export default class SelectByList extends Component {
 

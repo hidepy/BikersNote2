@@ -12,6 +12,8 @@ import CommonFunc from "../../utils/CommonFunc"
 
 export default class TopPage extends Component {
 
+  static key = "TopPage"
+
   constructor(props){
     super(props)
 
@@ -35,7 +37,12 @@ export default class TopPage extends Component {
 
   onPictureSelectClick(){
     CommonFunc.getPicture()
-      .then(blob=> (this.state.testImgSrc = "data:image/jpeg;base64," + blob))
+      .then(blob=> {
+        //this.state.testImgSrc = "data:image/jpeg;base64," + blob
+        this.setState({
+          testImgSrc: "data:image/jpeg;base64," + blob
+        })
+      })
   }
 
   onCarouselChange(e){
@@ -115,7 +122,7 @@ export default class TopPage extends Component {
 
         <section>
           <Button onClick={this.onPictureSelectClick}>Tap me!!</Button>
-          <img src={this.state.testImgSrc} />
+          <img src={this.state.testImgSrc} alt="" />
         </section>
 
         <section>

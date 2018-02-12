@@ -13,6 +13,8 @@ import MasterDef from "../../data-definition/Machine"
 
 export default class HeaderPage extends Component {
 
+  static key = "HeaderPage"
+
   constructor(props){
     super(props)
 
@@ -33,8 +35,9 @@ export default class HeaderPage extends Component {
       list: [],
     }
 
-    this.currentSearchCondition = []
-
+    // 現在の検索条件保持用
+    this.currentSearchCondition = searchConditionDef.slice()
+console.log(this.currentSearchCondition)
     this.onListItemClick = this.onListItemClick.bind(this)
     this.onPlusButtonClick = this.onPlusButtonClick.bind(this)
     this.toggleSearchConditionArea = this.toggleSearchConditionArea.bind(this)
@@ -102,12 +105,17 @@ console.log(val)
 
 //this.currentSearchCondition てきなもので現在の検索条件を管理するのがよさそう
 
-    this.currentSearchCondition
+    console.log(this.currentSearchCondition)
 
     const filterdList =
       this.props.HeaderPage.generalList
         .filter((v)=> {
           console.log(v[changedDef.propName])
+/*
+          for(){
+
+          }
+*/
 
 
 
@@ -122,7 +130,7 @@ console.log(val)
   }
 
   render() {
-
+console.log(this.state)
     const SEARCH_ITEM_PREFIX = "search-"
 
     const createSearchConditionItem = v=> {
@@ -164,19 +172,20 @@ this.currentSearchCondition.push({propName: v.propName, searchType: v.searchType
         <RoundButton onButtonClick={this.onPlusButtonClick} className={((this.props.params.withSearchCondition ? "" : "hidden"))} />
 
         <RoundButton iconName="fa-times" customStyle={{top: "8px"}} onButtonClick={this.toggleSearchConditionArea } />
-{this.state.isSearchConditionAreaShown}
+
         <section
           className={
             "animate-element searchConditionArea "
             + (this.state.isSearchConditionAreaShown ? "" : "searchConditionArea-closed ")
             + ((this.props.params.withSearchCondition ? "" : "hidden"))
+            + ("searchConditionAreaState is " + this.state.isSearchConditionAreaShown)
           }
         >
           {
             // 検索による絞り込みありの場合
             (this.state.searchConditionDef || []).map((v)=> {
               return (
-                <Row>
+                <Row key={v.title}>
                   <Col>
                     {v.title}
                   </Col>

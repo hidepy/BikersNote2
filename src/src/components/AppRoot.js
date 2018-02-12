@@ -109,7 +109,7 @@ console.log(route.params)
 
     // createElementで仮想DOMを作成する。
     //return React.createElement(route.component, props);
-    return <route.component {...props} title={route.title} params={route.params}  />
+    return <route.component key={route.component.key} {...props} title={route.title} params={route.params}  />
   }
 
   render(){

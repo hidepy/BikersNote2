@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import ons from "onsenui"
 import  {List, ListItem} from 'react-onsenui'
 
 export default class BikersList extends Component {
@@ -39,7 +38,7 @@ export default class BikersList extends Component {
     return (
       <List
         dataSource={this.props.items || []}
-        className={!this.props.items || (this.props.items.length == 0) ? "empty-list" : ""}
+        className={!this.props.items || (this.props.items.length === 0) ? "empty-list" : ""}
         renderRow={(row, i)=> (
           <ListItem key={i} onClick={(event)=> {this.props.onItemClick(event, i)}}>
             <div className='left'>

@@ -1,11 +1,5 @@
 import LocalStorageManager from "../utils/LocalStorageManager"
 
-function receiveItems(list, dispDef){
-  return {
-    type: "RECEIVE_SOMETHING",
-  }
-}
-
 export default{
   saveItem: (storageKey, item, key)=> {
     return dispatch=> {
