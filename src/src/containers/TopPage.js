@@ -14,6 +14,9 @@ function mapStateToProps(state){
 // actionを繋ぐ
 function mapDispatchToProps(dispatch){
   return {
+    searchMachines: ()=> {
+      dispatch(AppActions.searchMachines())
+    },
     searchNewArticles: (params)=> {
       dispatch(AppActions.searchNewArticles(params))
     },

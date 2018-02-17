@@ -56,10 +56,11 @@ export default class CommonFunc{
               reject(err)
           },
           {
-              quality: params.quality || 50,
+              quality: params.quality || 85,
               destinationType: params.destinationType || window.Camera.DestinationType.DATA_URL,
               //destinationType: params.destinationType || window.Camera.DestinationType.FILE_URI,
               sourceType: params.sourceType || navigator.camera.PictureSourceType.SAVEDPHOTOALBUM,
+              targetWidth: params.targetWidth || window.screen.width,
           }
         )
       }

@@ -2,6 +2,13 @@ import constants from "../utils/constants"
 import CommonFunc from "../utils/CommonFunc"
 import LocalStorageManager from "../utils/LocalStorageManager"
 
+function receiveMachines(list){
+  return {
+    type: "RECEIVE_MACHINES",
+    machines: list,
+  }
+}
+
 function receiveItems(list, dispDef){
   return {
     type: "RECEIVE_NEW_ARTICLES",
@@ -11,6 +18,17 @@ function receiveItems(list, dispDef){
 }
 
 export default{
+
+  searchMachines: ()=> {
+    return dispatch=> {
+      const list = CommonFunc.obj2Arr(
+        LocalStorageManager.getDataAll(constants.LOCAL_STORAGE_NAME.MACHINE_LIST)
+      )
+
+      dispatch(receiveMachines(list))
+    }
+  },
+
   searchNewArticles: (params)=> {
     return dispatch=> {
 
@@ -19,7 +37,7 @@ export default{
         "key",
         true
       )
-console.log(list)
+
       const dispDef = {left: "type", center: "title", right: "timestamp"}
 
       dispatch(receiveItems(list, dispDef))

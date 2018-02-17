@@ -35,9 +35,23 @@ export default class HeaderPage extends Component {
       list: [],
     }
 
-    // 現在の検索条件保持用
-    this.currentSearchCondition = searchConditionDef.slice()
-console.log(this.currentSearchCondition)
+    // 現在の検索条件保持用 現在選択値を保持しておくためにvalueプロパティを追加
+    this.currentSearchCondition =
+      searchConditionDef
+        .slice()
+        .map(v=>{
+          let additionalProp = {
+            value: ""
+          }
+
+          if(v.searchType === "date") additionalProp["value2"] = ""
+
+          return {
+            ...v,
+            ...additionalProp,
+          }
+        })
+
     this.onListItemClick = this.onListItemClick.bind(this)
     this.onPlusButtonClick = this.onPlusButtonClick.bind(this)
     this.toggleSearchConditionArea = this.toggleSearchConditionArea.bind(this)
@@ -98,29 +112,71 @@ console.log(this.currentSearchCondition)
     })
   }
 
-  onSearchConditionChange(changedDef, val){
-console.log("change comse")
-console.log(changedDef)
-console.log(val)
+  onSearchConditionChange(changedDef, val, options){
 
-//this.currentSearchCondition てきなもので現在の検索条件を管理するのがよさそう
+    for(var changedIndex = 0; changedIndex < this.currentSearchCondition.length; changedIndex++){
+      if(this.currentSearchCondition[changedIndex].propName === changedDef.propName) break
+    }
+    if(changedIndex >= this.currentSearchCondition.length){
+      ; // 境界外なら処理対象外
+    }
+    else{
 
-    console.log(this.currentSearchCondition)
+      let updPropName = "value"
+
+      // 検索種別がtypeの場合で、toを指している場合は、value2側に値を更新
+      if((changedDef.searchType === "date") && (options && (options.fromToType === "to"))){
+        updPropName = "value2"
+      }
+
+      // 絞り込み条件の値を更新
+      this.currentSearchCondition[changedIndex] = {
+        ...this.currentSearchCondition[changedIndex],
+        [updPropName]: val
+      }
+
+    }
 
     const filterdList =
       this.props.HeaderPage.generalList
         .filter((v)=> {
-          console.log(v[changedDef.propName])
-/*
-          for(){
+          console.log(v)
 
+          for(let i = 0; i < this.currentSearchCondition.length; i++){
+            const condVal = this.currentSearchCondition[i]
+            const prop = condVal.propName
+
+            // 種別によって判定方法を変更する
+            if(condVal.searchType === "date"){
+              // 日付の場合は範囲選択
+              const fromCheck = !!condVal.value  ? (condVal.value  <= v[changedDef.propName]) : true
+              const toCheck   = !!condVal.value2 ? (condVal.value2 <= v[changedDef.propName]) : true
+              //return fromCheck && toCheck
+              if(!(fromCheck && toCheck)){
+                console.log("日付チェックヒットなしにつき対象外")
+                return false
+              }
+            }
+            else{
+              // 絞り込み条件に値が無ければ次へ
+              if((condVal["value"] === undefined) || (condVal["value"] === null) || condVal["value"] === "") continue
+
+              if(condVal.searchType === "fuzzy"){
+                // あいまい検索の場合は、文字列が存在するかを検査
+                if(v[changedDef.propName].indexOf(val) < 0){
+                  return false
+                }
+              }
+              else{
+                // それ以外の場合は、単に値比較
+                if(v[prop] != condVal.value){
+                  return false
+                }
+              }
+            }
           }
-*/
 
-
-
-          if(!val) return true
-          return v[changedDef.propName].indexOf(val) >= 0
+          return true
         })
 
     this.setState({
@@ -135,8 +191,6 @@ console.log(this.state)
 
     const createSearchConditionItem = v=> {
 
-this.currentSearchCondition.push({propName: v.propName, searchType: v.searchType, value: ""})
-
       if(v.searchType === "selection"){
         return (
           <SelectByList prefix={SEARCH_ITEM_PREFIX} defItem={v} onSelectItemChange={this.onSearchConditionChange} />
@@ -150,9 +204,9 @@ this.currentSearchCondition.push({propName: v.propName, searchType: v.searchType
       else if(v.searchType === "date"){
         return (
           <div>
-            <input type="date" ref={SEARCH_ITEM_PREFIX + v.ref + "-from"} onChange={()=> this.onSearchConditionChange(v)} />
+            <input type="date" ref={SEARCH_ITEM_PREFIX + v.ref + "-from"} onChange={(event)=> this.onSearchConditionChange(v, event.target.value, {fromToType: "from"})} />
             ～
-            <input type="date" ref={SEARCH_ITEM_PREFIX + v.ref + "-to"} onChange={()=> this.onSearchConditionChange(v)} />
+            <input type="date" ref={SEARCH_ITEM_PREFIX + v.ref + "-to"  } onChange={(event)=> this.onSearchConditionChange(v, event.target.value, {fromToType: "to"})} />
           </div>
         )
       }

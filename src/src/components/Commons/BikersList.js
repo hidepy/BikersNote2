@@ -35,6 +35,33 @@ export default class BikersList extends Component {
       }
     })
 
+    function convDispVal(row, propName){
+      console.log(row)
+      console.log(propName)
+
+      const splitted = propName.split(":")
+
+      // 表示種別指定ありの場合
+      //   ⇒ xxx:IMG など : で区切られた場合の後ろのパラメータ
+      if(splitted.length >= 2){
+        const tagType = splitted[1]
+        const propName_s = splitted[0]
+
+        switch(tagType){
+          case "IMG":{
+            return <img src={row[propName_s]} style={{height: "44px", maxWidth: "44px"}}/>
+          }
+
+          default: {
+            return row[propName_s]
+          }
+        }
+
+      }
+
+      return row[propName]
+    }
+
     return (
       <List
         dataSource={this.props.items || []}
@@ -42,13 +69,13 @@ export default class BikersList extends Component {
         renderRow={(row, i)=> (
           <ListItem key={i} onClick={(event)=> {this.props.onItemClick(event, i)}}>
             <div className='left'>
-              {row[this.props.dispDef["left"]]}
+              {convDispVal(row, this.props.dispDef["left"])}
             </div>
             <div className='center'>
-              {row[this.props.dispDef["center"]]}
+              {convDispVal(row, this.props.dispDef["center"])}
             </div>
             <div className='right'>
-              {row[this.props.dispDef["right"]]}
+              {convDispVal(row, this.props.dispDef["right"])}
             </div>
           </ListItem>
         )}

@@ -9,6 +9,7 @@ import DetailPage from "../../containers/DetailPage"
 import constants from "../../utils/constants"
 import CommonFunc from "../../utils/CommonFunc"
 
+import Machine from "../../data-definition/Machine"
 
 export default class TopPage extends Component {
 
@@ -19,8 +20,8 @@ export default class TopPage extends Component {
 
     this.state = {
       index: 0,
-      items: ["#ccc", "#ddd", "#fff"],
       testImgSrc: "",
+      carouselItems: [],
     }
 
     this.onPictureSelectClick = this.onPictureSelectClick.bind(this)
@@ -31,6 +32,9 @@ export default class TopPage extends Component {
   }
 
   componentWillMount(){
+    // 機体の検索
+    this.props.searchMachines()
+
     // 記事の検索(検索条件を与えること)
     this.props.searchNewArticles({})
   }
@@ -106,23 +110,42 @@ export default class TopPage extends Component {
           </div>
         </Toolbar>
 
-        <section>
+        <section id="TopPage-carousel-wrapper">
           <Carousel onPostChange={this.onCarouselChange} index={this.state.index} swipeable autoScroll overscrollable>
           {
-            this.state.items.map((item, index) => (
-              <CarouselItem key={index} style={{backgroundColor: item}}>
-                <div style={{marginTop: '50%', textAlign: 'center'}}>
-                  Swipe me!
-                </div>
-                </CarouselItem>
-            ))
+            ([{...(new Machine({name: "_FIRST_CAROUSEL_ITEM_"}))}].concat(this.props.TopPage.machines)).map((item, index) => {
+
+              let style = {
+                backgroundColor: "#f4f4f4",
+                backgroundSize: "cover",
+                maxHeight: "100%",
+                overflow: "hidden",
+              }
+
+              if(item.img){
+                style["backgroundImage"] = "url(" + item.img + ")"
+              }
+
+              return (
+                <CarouselItem key={index} style={style}>
+                  <div style={{marginTop: '50%', textAlign: 'center'}}>
+                    {/*
+                    <img src={item.img} />
+                    */}
+                    {item.name}
+                  </div>
+                  </CarouselItem>
+              )
+            })
           }
           </Carousel>
         </section>
 
         <section>
+        {/*
           <Button onClick={this.onPictureSelectClick}>Tap me!!</Button>
           <img src={this.state.testImgSrc} alt="" />
+        */}
         </section>
 
         <section>

@@ -1,12 +1,13 @@
 export default class Machine{
 
   // 使用することは無いと思うが, プロパティ一覧を把握するため
-  constructor(){
-    this.name = ""
-    this.img = ""
-    this.purchase_date = ""
-    this.maker = ""
-    this.current_distance = 0
+  constructor(initObj = {}){
+    this.name = initObj.name || ""
+    this.img = initObj.img || ""
+    this.purchase_date = initObj.purchase_date || ""
+    this.maker = initObj.maker || ""
+    this.first_distance = initObj.first_distance || 0
+    this.current_distance = initObj.current_distance || 0
   }
 
   // DetailPageで使用する型定義情報を取得する

@@ -11,9 +11,13 @@
 }
 
 .searchConditionArea{
-  
+
 }
 .searchConditionArea-closed{
   opacity: 0;
   height: 0;
+}
+
+#TopPage-carousel-wrapper{
+  height: 40vh;
 }
