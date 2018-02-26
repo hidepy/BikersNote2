@@ -21,3 +21,8 @@
 #TopPage-carousel-wrapper{
   height: 40vh;
 }
+
+.ArticleList .left{
+  width: 35%;
+  overflow: hidden;
+}

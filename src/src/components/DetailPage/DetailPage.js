@@ -80,7 +80,7 @@ export default class DetailPage extends Component {
     this.inputItemDefAll = inputItemDef.slice()
 
   let updatedItemDef = inputItemDef
-console.log(this.inputItemDefAll)
+
     // typeが既に決まっていれば、定義を更新
     if(this.state.item && this.state.item["type"]){
       console.log("comes type def change")
@@ -169,7 +169,17 @@ console.log(this.inputItemDefAll)
         })
 
         // 値をstorageに保存する
+        //   ⇒本当はもっと疎結合にしたくもあるんだが...Typeごとにね
         this.props.saveItem(this.storageType, item, this.state.item ? this.state.item.key : null)
+
+        this.props.showToast("保存しました")
+
+        console.log(this.props)
+
+        // 処理後コールバックがある場合は実行
+        if(this.props.params.onSaveSuccessCallback){
+          this.props.params.onSaveSuccessCallback()
+        }
       }
     }
   }
@@ -326,8 +336,6 @@ console.log("in render")
             <BackButton>Back</BackButton>
           </div>
         </Toolbar>
-
-<Button onClick={this.onStateClick}>state</Button>
 
         <RoundButton
           onButtonClick={this.onEditButtonClick}

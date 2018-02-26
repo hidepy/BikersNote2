@@ -32,13 +32,20 @@ export default{
   searchNewArticles: (params)=> {
     return dispatch=> {
 
-      const list = CommonFunc.obj2SortedArr(
-        LocalStorageManager.getDataAll(constants.LOCAL_STORAGE_NAME.BIKERS_LIST) || [],
-        "key",
-        true
-      )
+      const list =
+        CommonFunc.obj2SortedArr(
+          LocalStorageManager.getDataAll(constants.LOCAL_STORAGE_NAME.BIKERS_LIST) || [],
+          "key",
+          true
+        )
+        .map((v)=> {
+          return {
+            ...v,
+            type_name: constants.ARTICLE_TYPE_NAME[v.type]
+          }
+        })
 
-      const dispDef = {left: "type", center: "title", right: "timestamp"}
+      const dispDef = {left: "type_name", center: "title", right: "timestamp"}
 
       dispatch(receiveItems(list, dispDef))
     }

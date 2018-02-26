@@ -21,6 +21,9 @@ function mapDispatchToProps(dispatch){
     deleteItem: (storageKey, key)=> {
       dispatch(AppActions.deleteItem(storageKey, key))
     },
+    showToast: (msg)=> {
+      dispatch(AppRootActions.showToast(msg))
+    }
   }
 }
 

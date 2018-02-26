@@ -29,6 +29,7 @@ export default class TopPage extends Component {
     this.onBikersListItemClick = this.onBikersListItemClick.bind(this)
     this.onSearchButtonClick = this.onSearchButtonClick.bind(this)
     this.onPlusButtonClick = this.onPlusButtonClick.bind(this)
+    this.onDetailPageSaveSuccessCallback = this.onDetailPageSaveSuccessCallback.bind(this)
   }
 
   componentWillMount(){
@@ -53,6 +54,16 @@ export default class TopPage extends Component {
     this.setState({index: e.activeIndex})
   }
 
+  // 詳細ページの保存成功時コールバック
+  onDetailPageSaveSuccessCallback(){
+
+    // 再検索実行
+    this.props.searchNewArticles({})
+
+    // 検索終了後にpoppage
+    this.props.navigator.popPage()
+  }
+
   onBikersListItemClick(event, i){
 
     const item = this.props.TopPage.newArticles[i]
@@ -64,6 +75,7 @@ export default class TopPage extends Component {
       params: {
         selectedItem: item,
         listType: constants.PAGE_TYPE.BIKERS_LIST,
+        onSaveSuccessCallback: this.onDetailPageSaveSuccessCallback,
       }
     })
   }
@@ -91,9 +103,6 @@ export default class TopPage extends Component {
   }
 
   render() {
-
-    const dispDefNewItems = {left: "type", center: "title", right: "timestamp"}
-
     return (
       <Page>
         <Toolbar>
@@ -149,7 +158,7 @@ export default class TopPage extends Component {
         </section>
 
         <section>
-          <h3>New Articles</h3>
+          <h3>新着</h3>
 
           <span className="">
             <RoundButton onButtonClick={this.onPlusButtonClick} />
@@ -157,8 +166,9 @@ export default class TopPage extends Component {
 
           <BikersList
             items={this.props.TopPage.newArticles}
-            dispDef={dispDefNewItems}
+            dispDef={this.props.TopPage.newArticlesDispDef}
             onItemClick={this.onBikersListItemClick}
+            clsName="ArticleList"
           />
         </section>
 

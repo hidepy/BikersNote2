@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 //import ons from "onsenui"
-import  {Page, Navigator, Splitter, SplitterSide, SplitterContent, List, ListItem, } from 'react-onsenui'
+import  {Page, Navigator, Splitter, SplitterSide, SplitterContent, List, ListItem, Toast } from 'react-onsenui'
 
 import constants from "../utils/constants"
 import HeaderPage from "../containers/HeaderPage"
@@ -131,6 +131,16 @@ console.log(route.params)
             ref={(navigator) => { this.navigator = navigator; }}
           />
         </SplitterContent>
+
+        <Toast isOpen={this.props.AppRoot.toastConf.isShown}>
+          <div className="message">
+            {this.props.AppRoot.toastConf.msg}
+          </div>
+          <button >
+            Dismiss
+          </button>
+        </Toast>
+
       </Splitter>
     );
   }

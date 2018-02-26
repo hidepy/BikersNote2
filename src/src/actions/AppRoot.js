@@ -11,6 +11,14 @@ function receiveItems(data){
   }
 }
 
+function receiveToastConf(isShown, msg){
+  return {
+    type: "RECEIVE_TOAST_CONF",
+    isShown: isShown,
+    msg: msg
+  }
+}
+
 export default{
   setSomething: (something)=> {
     return {
@@ -29,6 +37,17 @@ export default{
       return fetch("somewhere.com")
         .then(response=> response.json())
         .then(data=> dispatch(receiveSomething(data)))
+    }
+  },
+  showToast: (msg, timespan)=> {
+    return dispatch=> {
+      // Toast表示する
+      dispatch(receiveToastConf(true, msg))
+
+      // 一定時間後に非表示する
+      setTimeout(()=> {
+        dispatch(receiveToastConf(false, ""))
+      }, timespan || 3000)
     }
   }
 }

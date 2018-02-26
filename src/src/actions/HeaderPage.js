@@ -22,14 +22,21 @@ export default{
         //list = CommonFunc.obj2SortedArr(LocalStorageManager.getDataAll(constants.LOCAL_STORAGE_NAME.BIKERS_LIST), )
         //list = CommonFunc.obj2Arr(LocalStorageManager.getDataAll(constants.LOCAL_STORAGE_NAME.BIKERS_LIST))
         //list = LocalStorageManager.getDataAll(constants.LOCAL_STORAGE_NAME.BIKERS_LIST) || []
-        list = CommonFunc.obj2SortedArr(
-          LocalStorageManager.getDataAll(constants.LOCAL_STORAGE_NAME.BIKERS_LIST) || [],
-          "key",
-          true
-        )
+        list =
+          CommonFunc.obj2SortedArr(
+            LocalStorageManager.getDataAll(constants.LOCAL_STORAGE_NAME.BIKERS_LIST) || [],
+            "key",
+            true
+          )
+          .map((v)=> {
+            return {
+              ...v,
+              type_name: constants.ARTICLE_TYPE_NAME[v.type]
+            }
+          })
 
         // type, title, date, comment, img(multi), url, place, price, tag, part, time, spots, distance, litter, litter_price
-        dispDef = {left: "type", center: "title", right: "timestamp"}
+        dispDef = {left: "type_name", center: "title", right: "timestamp"}
       }
       else if(params.type === constants.PAGE_TYPE.MACHINE_LIST){
         //list = LocalStorageManager.getDataAll(constants.LOCAL_STORAGE_NAME.MACHINE_LIST)

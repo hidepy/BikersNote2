@@ -12,8 +12,6 @@ export default class BikersList extends Component {
 
   constructor(props){
     super(props)
-
-    console.log(this.props)
   }
 
   render() {
@@ -36,9 +34,6 @@ export default class BikersList extends Component {
     })
 
     function convDispVal(row, propName){
-      console.log(row)
-      console.log(propName)
-
       const splitted = propName.split(":")
 
       // 表示種別指定ありの場合
@@ -65,7 +60,7 @@ export default class BikersList extends Component {
     return (
       <List
         dataSource={this.props.items || []}
-        className={!this.props.items || (this.props.items.length === 0) ? "empty-list" : ""}
+        className={(!this.props.items || (this.props.items.length === 0) ? "empty-list " : "") + (this.props.clsName || "")}
         renderRow={(row, i)=> (
           <ListItem key={i} onClick={(event)=> {this.props.onItemClick(event, i)}}>
             <div className='left'>

@@ -2,7 +2,6 @@ export default class CommonFunc{
 
   static obj2Arr(obj){
       const arr = Object.keys(obj).map(key=> obj[key])
-
       return arr
   }
 
@@ -18,6 +17,9 @@ export default class CommonFunc{
     return CommonFunc.sortObjArr(CommonFunc.obj2Arr(obj), compKey, isDesc)
   }
 
+  //
+
+  // NVリストから、valueに一致するlistのnameを返却する
   static getNameByValue(value, list){
 
     if(!list) return value
@@ -31,6 +33,7 @@ export default class CommonFunc{
     return value
   }
 
+  // 写真をストレージから取得する
   static getPicture(params){
     return new Promise(function(resolve, reject){
       try{

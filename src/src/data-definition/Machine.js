@@ -19,6 +19,7 @@ export default class Machine{
       { propName: "maker", title: "メーカー", inputType: "text", ref: "machine-maker"},
       { propName: "first_distance", title: "乗り始めた時の走行距離", inputType: "number", ref: "machine-first_distance"},
       { propName: "current_distance", title: "現在の走行距離", inputType: "number", ref: "machine-current_distance"},
+      { propName: "memo", title: "メモ", inputType: "text", ref: "machine-memo"},
     ]
 
     return def
