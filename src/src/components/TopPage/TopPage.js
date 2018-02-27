@@ -91,13 +91,24 @@ export default class TopPage extends Component {
     })
   }
 
+  // 詳細ページの保存成功時コールバック
+  onDetailPageSaveSuccessCallback(){
+
+    // 再検索実行
+    this.props.searchNewArticles()
+
+    // 検索終了後にpoppage
+    this.props.navigator.popPage()
+  }
+
   onPlusButtonClick(){
     this.props.navigator.pushPage({
       component: DetailPage,
       title: '追加',
       params: {
         listType: constants.PAGE_TYPE.BIKERS_LIST,
-        isUpdateScreen: true
+        isUpdateScreen: true,
+        onSaveSuccessCallback: this.onDetailPageSaveSuccessCallback,
       }
     })
   }

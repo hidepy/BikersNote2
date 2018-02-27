@@ -215,8 +215,6 @@ export default class DetailPage extends Component {
 
   render() {
 
-console.log("in render")
-
     const screenType = this.state.isUpdateScreen ? 1 : 0; // 0参照, 1更新
 
     const defaultWidth = "160px"
@@ -263,6 +261,9 @@ console.log("in render")
           case "date": {
             return (<input ref={v.ref} type="date" />)
           }
+          case "textarea": {
+            return (<textarea ref={v.ref} style={{height: "5em"}} />)
+          }
           case "select": {
             // 固定でonchange入れ込んじゃう
             return (
@@ -275,7 +276,7 @@ console.log("in render")
                 <div>
                   <Button onClick={
                     ()=>
-                      CommonFunc.getPicture()
+                      CommonFunc.getPicture({targetWidth: window.screen.width * 2})
                         .then(base64img=> {
                           alert("select ok!!")
                           console.log("in CommonFunc.getPicture callback")
@@ -337,23 +338,6 @@ console.log("in render")
           </div>
         </Toolbar>
 
-        <RoundButton
-          onButtonClick={this.onEditButtonClick}
-          iconName={this.state.isUpdateScreen ? "fa-check-circle" : "fa-edit"}
-        />
-
-        <RoundButton
-          customStyle={
-            {
-              display: (this.state.item && this.state.item.key) ? "inline-block" : "none",
-              bottom: "84px",
-              backgroundColor: "#666"
-            }
-          }
-          onButtonClick={this.onDeleteButtonClick}
-          iconName={"fa-trash"}
-        />
-
         <section>
           {
             // 入力要素/表示要素の定義分描画する
@@ -374,6 +358,23 @@ console.log("in render")
               })
           }
         </section>
+
+        <RoundButton
+          onButtonClick={this.onEditButtonClick}
+          iconName={this.state.isUpdateScreen ? "fa-check-circle" : "fa-edit"}
+        />
+
+        <RoundButton
+          customStyle={
+            {
+              display: (this.state.item && this.state.item.key) ? "inline-block" : "none",
+              bottom: "84px",
+              backgroundColor: "#666"
+            }
+          }
+          onButtonClick={this.onDeleteButtonClick}
+          iconName={"fa-trash"}
+        />
 
       </Page>
     );

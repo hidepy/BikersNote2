@@ -2,10 +2,6 @@
   content: 'データがありません'
 }
 
-.toolbar{
-  position: relative !important;
-}
-
 .hidden{
   display: none;
 }
@@ -25,4 +21,11 @@
 .ArticleList .left{
   width: 35%;
   overflow: hidden;
+}
+
+ons-toolbar.toolbar{
+  position: fixed;
+}
+ons-toolbar.toolbar + section{
+  margin-top: 48px;
 }

@@ -250,10 +250,6 @@ export default class HeaderPage extends Component {
           <div className="center">{this.props.title}</div>
         </Toolbar>
 
-        <RoundButton onButtonClick={this.onPlusButtonClick} className={((this.props.params.withSearchCondition ? "" : "hidden"))} />
-
-        <RoundButton iconName="fa-times" customStyle={{top: "8px"}} onButtonClick={this.toggleSearchConditionArea } />
-
         <section
           className={
             "animate-element searchConditionArea "
@@ -286,6 +282,11 @@ export default class HeaderPage extends Component {
             onItemClick={this.onListItemClick}
            />
         </section>
+
+        <RoundButton onButtonClick={this.onPlusButtonClick} className={((this.props.params.withSearchCondition ? "" : "hidden"))} />
+
+        <RoundButton iconName="fa-times" customStyle={{top: "8px"}} onButtonClick={this.toggleSearchConditionArea } />
+
       </Page>
 
     )
