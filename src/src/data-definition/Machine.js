@@ -15,9 +15,9 @@ export default class Machine{
   // DetailPageで使用する型定義情報を取得する
   static getDefinition(type){
     const def = [
-      { propName: "name", title: "名前", inputType: "text", ref: "machine-name"},
-      { propName: "img", title: "画像", inputType: "img", ref: "machine-img" },
       { propName: "maker", title: "メーカー", inputType: "select", ref: "machine-maker", selectList: constants.BIKE_MAKER},
+      { propName: "name", title: "名前", inputType: "text", ref: "machine-name"},
+      { propName: "img", title: "画像", inputType: "img", ref: "machine-img" },  
       { propName: "first_distance", title: "乗り始めた時の走行距離", inputType: "number", ref: "machine-first_distance"},
       { propName: "current_distance", title: "現在の走行距離", inputType: "number", ref: "machine-current_distance"},
       { propName: "memo", title: "メモ", inputType: "textarea", ref: "machine-memo"},

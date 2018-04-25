@@ -1,9 +1,52 @@
+body{
+
+}
+
 .empty-list::after{
   content: 'データがありません'
 }
 
 .hidden{
   display: none;
+}
+
+select{
+  -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    background-clip: padding-box;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: none;
+    vertical-align: top;
+    outline: none;
+    line-height: 1;
+    font-family: -apple-system, 'Helvetica Neue', 'Helvetica', 'Arial', 'Lucida Grande', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    border: none;
+    background-color: transparent;
+    position: relative;
+    font-size: 17px;
+    height: 32px;
+    line-height: 32px;
+    border-color: #ccc;
+    color: #1f1f21;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    display: inline-block;
+    border-radius: 0;
+    border: none;
+    padding: 0 20px 0 0;
+    background-color: transparent;
+    background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMTBweCIgaGVpZ2h0PSI1cHgiIHZpZXdCb3g9IjAgMCAxMCA1IiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPgogICAgPCEtLSBHZW5lcmF0b3I6IFNrZXRjaCA0My4yICgzOTA2OSkgLSBodHRwOi8vd3d3LmJvaGVtaWFuY29kaW5nLmNvbS9za2V0Y2ggLS0+CiAgICA8dGl0bGU+c2VsZWN0LWFsbG93PC90aXRsZT4KICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPgogICAgPGRlZnM+PC9kZWZzPgogICAgPGcgaWQ9InNlbGVjdCIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9Imlvcy1zZWxlY3QiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xOTguMDAwMDAwLCAtMTE0LjAwMDAwMCkiIGZpbGw9IiM3NTc1NzUiPgogICAgICAgICAgICA8ZyBpZD0ibWVudS1iYXItKy1vcGVuLW1lbnUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEyMy4wMDAwMDAsIDEwMC4wMDAwMDApIj4KICAgICAgICAgICAgICAgIDxnIGlkPSJtZW51LWJhciI+CiAgICAgICAgICAgICAgICAgICAgPHBvbHlnb24gaWQ9InNlbGVjdC1hbGxvdyIgcG9pbnRzPSI3NSAxNCA4MCAxOSA4NSAxNCI+PC9wb2x5Z29uPgogICAgICAgICAgICAgICAgPC9nPgogICAgICAgICAgICA8L2c+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=');
+    background-repeat: no-repeat;
+    background-position: right center;
+    border-bottom: none;
 }
 
 .searchConditionArea{
@@ -17,6 +60,50 @@
 #TopPage-carousel-wrapper{
   height: 40vh;
 }
+#TopPage-carousel-wrapper > ons-carousel{
+  height: 100%;
+}
+.TopPage-carousel-bikename{
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  font-size: 32px;
+  padding: 8px 12px 4px 12px;
+  background-color: #666;
+  color: #fff;
+  padding-bottom: 6px;
+  border-radius: 2px;
+}
+#TopPage-carousel-firstentry{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 48px;
+}
+
+.HeaderPage-itemHead{
+  font-size: 12px;
+  color: #777;
+}
+.HeaderPage-itembody > *{
+  width: 100%;
+}
+
+.DetailPage-itemHead{
+  font-size: 12px;
+  color: #777;
+}
+.DetailPage-itembody{
+  padding: 10px;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-bottom: solid 1px #e0e0e0;
+}
+.DetailPage-itembody > *{
+  width: 100%;
+}
+
 
 .ArticleList .left{
   width: 35%;
@@ -27,5 +114,5 @@ ons-toolbar.toolbar{
   position: fixed;
 }
 ons-toolbar.toolbar + section{
-  margin-top: 48px;
+  margin-top: 44px;
 }

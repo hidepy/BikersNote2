@@ -34,7 +34,7 @@ export default class DetailPage extends Component {
         defClass: null,
         _updateFlg: false
       }
-
+console.log(this.state.item)
       // 全入力項目の定義を保存しておく
       this.inputItemDefAll = []
 
@@ -68,18 +68,14 @@ export default class DetailPage extends Component {
       if(v.inputType == "img"){
         v.tmpImages = this.state.item[v.propName]
       }
-/*
-      if(v.inputType == "type"){
-        inputTypeDef = v
-      }
-*/
+
       return v
     })
 
     // 全定義を保存する
     this.inputItemDefAll = inputItemDef.slice()
 
-  let updatedItemDef = inputItemDef
+    let updatedItemDef = inputItemDef
 
     // typeが既に決まっていれば、定義を更新
     if(this.state.item && this.state.item["type"]){
@@ -114,7 +110,7 @@ export default class DetailPage extends Component {
       if(v.inputType == "img"){
         v.tmpImages = this.state.item[v.propName]
       }
-      else if(v.inputType == "select"){
+      else if((v.inputType == "select") || (v.inputType == "input-select")){
         document.querySelector("[name=" + v.ref + "]").value = this.state.item[v.propName]
       }
       else{
@@ -156,7 +152,7 @@ export default class DetailPage extends Component {
               Array.prototype.slice.call(document.querySelectorAll("#images-" + v.ref + " img"))
                 .map(elImg=> elImg.getAttribute("src"))
           }
-          else if(v.inputType == "select"){
+          else if((v.inputType == "select") || (v.inputType == "input-select")){
             console.log(v.ref)
 
             item[v.propName] = document.querySelector("[name=" + v.ref + "]").value
@@ -195,6 +191,7 @@ export default class DetailPage extends Component {
 
   onTypeChange(definition, value){
 
+console.log("comes")
 
     if(definition.propName === "type"){
       // 画面の表示項目を変更する
@@ -248,6 +245,16 @@ export default class DetailPage extends Component {
               </div>
             )
           }
+          case "input-select": {
+            return (
+              <div>
+              {
+                // selectの場合は値がコードになっているので、名前として解釈する
+                CommonFunc.getNameByValue(this.state.item[v["propName"]], v.selectList)
+              }
+              </div>
+            )
+          }
           default: {
             return (<div>{this.state.item[v["propName"]]}</div>)
           }
@@ -256,18 +263,18 @@ export default class DetailPage extends Component {
       else{
         switch(v.inputType){
           case "text": {
-            return (<input ref={v.ref} />)
+            return (<ons-input ref={v.ref} />)
           }
           case "date": {
-            return (<input ref={v.ref} type="date" />)
+            return (<ons-input ref={v.ref} type="date" />)
           }
           case "textarea": {
-            return (<textarea ref={v.ref} style={{height: "5em"}} />)
+            return (<textarea className="textarea textarea--transparent" ref={v.ref} style={{height: "5em"}} />)
           }
           case "select": {
             // 固定でonchange入れ込んじゃう
             return (
-              <SelectByList defItem={v} onSelectItemChange={this.onTypeChange } />
+              <SelectByList defItem={v} onSelectItemChange={this.onTypeChange} />
             )
           }
           case "img": {
@@ -276,7 +283,7 @@ export default class DetailPage extends Component {
                 <div>
                   <Button onClick={
                     ()=>
-                      CommonFunc.getPicture({targetWidth: window.screen.width * 2})
+                      CommonFunc.getPicture({targetWidth: window.screen.width * 3})
                         .then(base64img=> {
                           alert("select ok!!")
                           console.log("in CommonFunc.getPicture callback")
@@ -323,11 +330,22 @@ export default class DetailPage extends Component {
             )
           }
           default: {
-            return (<input ref={v.ref} />)
+            return (<ons-input ref={v.ref} />)
           }
         }
       }
     }
+
+    const createItemWrapper = (v, i)=> (
+      <div>
+        <p className="DetailPage-itemHead">{v.title}</p>
+        <div className="DetailPage-itembody">
+        {
+          createItem(v, i)
+        }
+        </div>
+      </div>
+    )
 
     return (
       <Page>
@@ -345,12 +363,11 @@ export default class DetailPage extends Component {
               .map((v, i)=> {
                 return (
                   <Row key={i}>
-                    <Col>{v.title}</Col>
                     <Col>
                       {
                         // 定義のプロパティ名
                         //(screenType == 0) ? (<div>{v["propName"]}</div>) : (<input ref={v.ref} />)
-                        createItem(v, i)
+                        createItemWrapper(v, i)
                       }
                     </Col>
                   </Row>

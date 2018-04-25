@@ -30,6 +30,8 @@ export default class TopPage extends Component {
     this.onSearchButtonClick = this.onSearchButtonClick.bind(this)
     this.onPlusButtonClick = this.onPlusButtonClick.bind(this)
     this.onDetailPageSaveSuccessCallback = this.onDetailPageSaveSuccessCallback.bind(this)
+    this.onEntryFirstBikeButtonClick = this.onEntryFirstBikeButtonClick.bind(this)
+    this.onBikenameClick = this.onBikenameClick.bind(this)
   }
 
   componentWillMount(){
@@ -113,6 +115,36 @@ export default class TopPage extends Component {
     })
   }
 
+  onEntryFirstBikeButtonClick(){
+    this.props.navigator.pushPage({
+      component: DetailPage,
+      title: '追加',
+      params: {
+        listType: constants.PAGE_TYPE.MACHINE_LIST,
+        isUpdateScreen: true,
+        onSaveSuccessCallback: this.onDetailPageSaveSuccessCallback,
+      }
+    })
+  }
+
+  onBikenameClick(i){
+    const item = this.props.TopPage.machines[i]
+    console.log(item)
+    this.props.navigator.pushPage({
+      component: DetailPage,
+      title: '詳細',
+      params: {
+        selectedItem: item,
+        listType: constants.PAGE_TYPE.MACHINE_LIST,
+        onSaveSuccessCallback: this.onDetailPageSaveSuccessCallback,
+      }
+    })
+  }
+
+  shareClick(){
+    window.plugins.socialsharing.share('メッセージ')
+  }
+
   render() {
     return (
       <Page>
@@ -133,30 +165,38 @@ export default class TopPage extends Component {
         <section id="TopPage-carousel-wrapper">
           <Carousel onPostChange={this.onCarouselChange} index={this.state.index} swipeable autoScroll overscrollable>
           {
-            ([{...(new Machine({name: "_FIRST_CAROUSEL_ITEM_"}))}].concat(this.props.TopPage.machines)).map((item, index) => {
+            //([{...(new Machine({name: "_FIRST_CAROUSEL_ITEM_"}))}].concat(this.props.TopPage.machines))
 
-              let style = {
-                backgroundColor: "#f4f4f4",
-                backgroundSize: "cover",
-                maxHeight: "100%",
-                overflow: "hidden",
-              }
+            !!this.props.TopPage.machines && this.props.TopPage.machines.length > 0 ?
 
-              if(item.img){
-                style["backgroundImage"] = "url(" + item.img + ")"
-              }
+              this.props.TopPage.machines
+                .map((item, index) => {
 
-              return (
-                <CarouselItem key={index} style={style}>
-                  <div style={{marginTop: '50%', textAlign: 'center'}}>
-                    {/*
-                    <img src={item.img} />
-                    */}
-                    {item.name}
-                  </div>
-                  </CarouselItem>
+                  let style = {
+                    backgroundColor: "#f4f4f4",
+                    backgroundSize: "cover",
+                    maxHeight: "100%",
+                    overflow: "hidden",
+                  }
+
+                  if(item.img){
+                    style["backgroundImage"] = "url(" + item.img + ")"
+                  }
+
+                  return (
+                    <CarouselItem key={index} style={style}>
+                      <div className="TopPage-carousel-bikename">
+                        <span onClick={()=> this.onBikenameClick(index)}>{item.name}</span>
+                      </div>
+                      </CarouselItem>
+                  )
+                })
+
+              : (
+                <CarouselItem key={0} style={{maxHeight: "100%", overflow: "hidden"}}>
+                  <Button id="TopPage-carousel-firstentry" onClick={this.onEntryFirstBikeButtonClick}>愛車を登録しよう！</Button>
+                </CarouselItem>
               )
-            })
           }
           </Carousel>
         </section>
@@ -170,6 +210,9 @@ export default class TopPage extends Component {
 
         <section>
           <h3>新着</h3>
+
+<button onClick={this.shareClick}>social sharing</button>
+
 
           <span className="">
             <RoundButton onButtonClick={this.onPlusButtonClick} />

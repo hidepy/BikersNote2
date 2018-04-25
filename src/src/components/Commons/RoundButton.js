@@ -17,6 +17,7 @@ export default class RoundButton extends Component {
       <Fab
         style={{
           backgroundColor: ons.platform.isIOS() ? '#4282cc' : null,
+          display: "fixed",
           ...this.props.customStyle
         }}
         onClick={this.props.onButtonClick}

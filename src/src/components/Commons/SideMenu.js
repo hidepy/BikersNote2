@@ -20,7 +20,7 @@ export default class SideMenu extends Component {
         style={{
             boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)'
         }}
-        side='left'
+        side='right'
         width={200}
         collapse={true}
         swipeable={true}

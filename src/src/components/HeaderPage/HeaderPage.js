@@ -223,16 +223,16 @@ export default class HeaderPage extends Component {
       // 検索タイプがあいまい検索の場合
       else if(v.searchType === "fuzzy"){
         return (
-          <input type="text" ref={SEARCH_ITEM_PREFIX + v.ref} onChange={(event)=> this.onSearchConditionChange(v, event.target.value)} />
+          <ons-input type="text" ref={SEARCH_ITEM_PREFIX + v.ref} onChange={(event)=> this.onSearchConditionChange(v, event.target.value)} />
         )
       }
       // 検索タイプが日付の場合
       else if(v.searchType === "date"){
         return (
           <div>
-            <input type="date" ref={SEARCH_ITEM_PREFIX + v.ref + "-from"} onChange={(event)=> this.onSearchConditionChange(v, event.target.value, {fromToType: "from"})} />
+            <ons-input type="date" ref={SEARCH_ITEM_PREFIX + v.ref + "-from"} onChange={(event)=> this.onSearchConditionChange(v, event.target.value, {fromToType: "from"})} />
             ～
-            <input type="date" ref={SEARCH_ITEM_PREFIX + v.ref + "-to"  } onChange={(event)=> this.onSearchConditionChange(v, event.target.value, {fromToType: "to"})} />
+            <ons-input type="date" ref={SEARCH_ITEM_PREFIX + v.ref + "-to"  } onChange={(event)=> this.onSearchConditionChange(v, event.target.value, {fromToType: "to"})} />
           </div>
         )
       }
@@ -263,10 +263,10 @@ export default class HeaderPage extends Component {
             (this.state.searchConditionDef || []).map((v)=> {
               return (
                 <Row key={v.title}>
-                  <Col>
+                  <Col width="80px" className="HeaderPage-itemHead">
                     {v.title}
                   </Col>
-                  <Col>
+                  <Col className="HeaderPage-itembody">
                     {createSearchConditionItem(v)}
                   </Col>
                 </Row>
@@ -282,6 +282,7 @@ export default class HeaderPage extends Component {
             onItemClick={this.onListItemClick}
            />
         </section>
+
 
         <RoundButton onButtonClick={this.onPlusButtonClick} className={((this.props.params.withSearchCondition ? "" : "hidden"))} />
 
