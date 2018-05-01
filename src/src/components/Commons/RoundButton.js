@@ -9,6 +9,7 @@ export default class RoundButton extends Component {
     onButtonClick:  PropTypes.func,
     iconName:       PropTypes.string,
     customStyle:    PropTypes.object,
+    isHidden:       PropTypes.bool,
   }
 
   render() {
@@ -17,7 +18,8 @@ export default class RoundButton extends Component {
       <Fab
         style={{
           backgroundColor: ons.platform.isIOS() ? '#4282cc' : null,
-          display: "fixed",
+          position: "fixed",
+          display: (this.props.isHidden ? "none": "inherit"),
           ...this.props.customStyle
         }}
         onClick={this.props.onButtonClick}

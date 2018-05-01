@@ -1,5 +1,5 @@
 body{
-
+  opacity: 0.9;
 }
 
 .empty-list::after{
@@ -55,6 +55,9 @@ select{
 .searchConditionArea-closed{
   opacity: 0;
   height: 0;
+}
+.searchConditionArea-disabled select, .searchConditionArea-disabled input{
+  pointer-events: none;
 }
 
 #TopPage-carousel-wrapper{
@@ -115,4 +118,13 @@ ons-toolbar.toolbar{
 }
 ons-toolbar.toolbar + section{
   margin-top: 44px;
+  padding-top: 12px;
+}
+
+#Nenpi-Chart .recharts-wrapper{
+  margin-left: -32px;
+}
+
+#article-pie-chart{
+  font-size: 12px;
 }

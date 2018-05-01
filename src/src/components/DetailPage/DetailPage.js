@@ -34,7 +34,7 @@ export default class DetailPage extends Component {
         defClass: null,
         _updateFlg: false
       }
-console.log(this.state.item)
+
       // 全入力項目の定義を保存しておく
       this.inputItemDefAll = []
 
@@ -49,6 +49,7 @@ console.log(this.state.item)
       this.setValues2InputElement = this.setValues2InputElement.bind(this)
       this.onTypeChange = this.onTypeChange.bind(this)
       this.onStateClick = this.onStateClick.bind(this)
+      this.onShareButtonClick = this.onShareButtonClick.bind(this)
   }
 
   componentWillMount(){
@@ -114,6 +115,9 @@ console.log(this.state.item)
         document.querySelector("[name=" + v.ref + "]").value = this.state.item[v.propName]
       }
       else{
+
+        if(!this.refs[v.ref]) return
+
         // 値をinpuタグにコピー
         this.refs[v.ref].value = this.state.item[v.propName] || ""
       }
@@ -191,8 +195,6 @@ console.log(this.state.item)
 
   onTypeChange(definition, value){
 
-console.log("comes")
-
     if(definition.propName === "type"){
       // 画面の表示項目を変更する
       const newDef = ArticleDef.filterDefinition(this.inputItemDefAll, value)
@@ -208,6 +210,61 @@ console.log("comes")
   onStateClick(){
     console.log(this.state)
     alert("out state")
+  }
+
+  // 共有ボタン押下
+  onShareButtonClick(){
+
+    let title = ""
+
+    const message = (this.state.inputItemDef || [])
+      .reduce((p, c)=> {
+
+        if(c.inputType === "img"){
+          /*
+          Array.prototype.slice.call(document.querySelectorAll("#" + c.ref + " > img"))
+            .reduce((ip, ic)=> {
+              return
+            }, )
+          */
+          return p + "IMG..." + "\n"
+        }
+        else{
+
+          const text = (document.querySelector("#" + c.ref) || {innerText: ""}).innerText
+
+          if(c.propName === "title"){
+            title = text
+          }
+
+          return p + "【" + c.title + "】" + "\n" + text + "\n\n"
+        }
+
+        return ""
+      }, "")
+
+//alert(title)
+//alert(message)
+
+    // this is the complete list of currently supported params you can pass to the plugin (all optional)
+    var options = {
+      message: message, // not supported on some apps (Facebook, Instagram)
+      subject: title, // fi. for email
+      files: ['', ''], // an array of filenames either locally or remotely
+    };
+
+    var onSuccess = function(result) {
+      //alert("on success")
+      //console.log("Share completed? " + result.completed); // On Android apps mostly return false even while it's true
+      //console.log("Shared to app: " + result.app); // On Android result.app since plugin version 5.4.0 this is no longer empty. On iOS it's empty when sharing is cancelled (result.completed=false)
+    };
+
+    var onError = function(msg) {
+      alert("on error")
+      console.log("Sharing failed with message: " + msg);
+    };
+
+    window.plugins.socialsharing.shareWithOptions(options, onSuccess, onError);
   }
 
   render() {
@@ -226,7 +283,7 @@ console.log("comes")
             const height = v.height || defaultHeight
 
             return (
-              <div>
+              <div id={v.ref}>
               {
                 (this.state.item[v["propName"]] || []).map(imgData=> {
                   return (<img src={imgData} width={width} height={height} />)
@@ -237,7 +294,7 @@ console.log("comes")
           }
           case "select": {
             return (
-              <div>
+              <div id={v.ref}>
               {
                 // selectの場合は値がコードになっているので、名前として解釈する
                 CommonFunc.getNameByValue(this.state.item[v["propName"]], v.selectList)
@@ -247,7 +304,7 @@ console.log("comes")
           }
           case "input-select": {
             return (
-              <div>
+              <div id={v.ref}>
               {
                 // selectの場合は値がコードになっているので、名前として解釈する
                 CommonFunc.getNameByValue(this.state.item[v["propName"]], v.selectList)
@@ -255,8 +312,17 @@ console.log("comes")
               </div>
             )
           }
+          case "custom": {
+            return (
+              <v.customComponent item={this.state.item[v["propName"]]} />
+            )
+          }
           default: {
-            return (<div>{this.state.item[v["propName"]]}</div>)
+            return (
+              <div id={v.ref}>
+                {this.state.item[v["propName"]]}
+              </div>
+            )
           }
         }
       }
@@ -329,6 +395,13 @@ console.log("comes")
               </div>
             )
           }
+          case "custom": {
+            if(v.dispOnly){
+                return (<p>is disp only</p>)
+            }
+
+            return (<p>is custom</p>)
+          }
           default: {
             return (<ons-input ref={v.ref} />)
           }
@@ -375,6 +448,17 @@ console.log("comes")
               })
           }
         </section>
+
+        <RoundButton
+          onButtonClick={this.onShareButtonClick}
+          iconName={"fa-share-alt"}
+          isHidden={this.state.isUpdateScreen || (this.props.params.listType !== constants.PAGE_TYPE.BIKERS_LIST)}
+          customStyle={
+            {
+               top: "16px"
+            }
+          }
+        />
 
         <RoundButton
           onButtonClick={this.onEditButtonClick}

@@ -150,9 +150,9 @@ export default class TopPage extends Component {
       <Page>
         <Toolbar>
           <div className="left" onClick={()=> this.props.toggleMenu()}>
-          <span className="toolbar-button">
-            <i className="ion-navicon"></i>
-          </span>
+            <span className="toolbar-button">
+              <i className="ion-navicon"></i>
+            </span>
           </div>
           <div className="center">BikersNote</div>
           <div className="right" onClick={this.onSearchButtonClick}>

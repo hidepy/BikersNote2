@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 //import ons from "onsenui"
-import  {Page, Navigator, Splitter, SplitterSide, SplitterContent, List, ListItem, Toast } from 'react-onsenui'
+import  { Button, Page, Navigator, Splitter, SplitterSide, SplitterContent, List, ListItem, Toast } from 'react-onsenui'
 
 import constants from "../utils/constants"
+import MasterDataManager from "../utils/MasterDataManager"
 import HeaderPage from "../containers/HeaderPage"
 import TopPage from "../containers/TopPage"
 
@@ -42,7 +43,7 @@ class AppRoot extends Component {
 
   loadPage(pageType) {
 
-    this.hide()
+    //this.hide()
 
     const currentPage = this.navigator.pages.slice(-1)[0] // --- or [this.navigator.pages.length - 1]
 
@@ -53,7 +54,6 @@ class AppRoot extends Component {
     }
     */
 
-console.log("in loadpage")
 
     this.navigator.pushPage(
       {
@@ -92,8 +92,9 @@ console.log("in loadpage")
   }
 
   renderPage(route, navigator) {
-console.log(route)
-console.log(route.params)
+console.log("Components-> AppRoot-> renderPage")
+//console.log(route)
+//console.log(route.params)
     // 現在のページのpropsがあればpropsを代入する。
     const props = route.props || {};
     // 現在のnavigatorオブジェクトをprops.navigatorに代入する。
@@ -103,8 +104,69 @@ console.log(route.params)
     // メニュー表示切替メソッドを子供に渡しておく
     props.toggleMenu = this.toggleMenu;
 
-    if(!!route.params && (route.listType === constants.BIKERS_LIST)){
-      route.params["isSearchConditionAreaShown"] = true
+    if(!!route.params){
+
+      route.params["pageType"] = route.component.key
+
+
+      // 記事ページの場合
+      if(route.params.listType === constants.BIKERS_LIST){
+        route.params["isSearchConditionAreaShown"] = true
+      }
+
+      // 機体ページの場合 かつ 詳細ページの場合
+      if(
+        (route.params.listType === constants.PAGE_TYPE.MACHINE_LIST)
+        && (route.component.key === "DetailPage")
+        && (route.params.selectedItem)
+      ){
+        // 機体ダッシュボード画面に燃費, その他リストの情報を詰め込む
+        route.params.selectedItem.nenpi_list = [
+          {key: "1524813441112", litter: 10, distance: 240, date: "2018-04-01"},
+          {key: "1524813441113", litter: 11, distance: 250, date: "2018-04-02"},
+          {key: "1524813441114", litter: 12, distance: 260, date: "2018-04-03"},
+          {key: "1524813441115", litter: 13, distance: 320, date: "2018-04-04"},
+        ]
+        route.params.selectedItem.nenpi_list =
+          route.params.selectedItem.nenpi_list.map(v=>{
+            return {
+              ...v,
+              ["nenpi"]: (v.distance || 0) / (v.litter || 1)
+            }
+          })
+
+        route.params.selectedItem.article_piechart = {
+          data: [
+            {name: "メンテナンス", count: 5},
+            {name: "カスタム", count: 4},
+            {name: "ツーリング", count: 12},
+            {name: "写真", count: 1},
+            {name: "燃費", count: 3},
+            {name: "購入品", count: 3},
+            {name: "イベント", count: 1},
+            {name: "メモ", count: 1},
+
+          ],
+          onPieClick: (item, index)=> {
+
+            this.navigator.pushPage(
+              {
+                component: HeaderPage,
+                params: {
+                  listType: constants.PAGE_TYPE.BIKERS_LIST,
+                  withSearchCondition: true,
+                  fixSearchCondition: true,
+                  searchCondition: {
+                    target: route.params.selectedItem.name,
+                    type: (MasterDataManager.getArticleTypeDefArr())[index],
+                  }
+                }
+              }
+            )
+
+          }
+        }
+      }
     }
 
     // createElementで仮想DOMを作成する。
@@ -117,6 +179,11 @@ console.log(route.params)
       <Splitter>
         <SplitterSide side='left' width={220} collapse={true} swipeable={true} isOpen={this.state.isMenuOpen} onClose={this.hide.bind(this)} onOpen={this.show.bind(this)}>
           <Page>
+            <div onClick={()=> this.toggleMenu()} style={{height: "44px"}} className="left toolbar__left">
+              <span className="toolbar-button">
+                <i className="fa fa-times"></i>
+              </span>
+            </div>
             <List>
               <ListItem key={HeaderPage.name + "_" + constants.PAGE_TYPE.BIKERS_LIST } onClick={this.loadPage.bind(HeaderPage, constants.PAGE_TYPE.BIKERS_LIST)}  tappable>記事一覧</ListItem>
               <ListItem key={HeaderPage.name + "_" + constants.PAGE_TYPE.MACHINE_LIST} onClick={this.loadPage.bind(HeaderPage, constants.PAGE_TYPE.MACHINE_LIST)} tappable>機体一覧</ListItem>

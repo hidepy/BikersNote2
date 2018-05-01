@@ -27,7 +27,24 @@ export default class MasterDataManager{
   }
 
   // ArticleTypeをNameValuePairの配列として取得する
-  static getArticleTypeNVPair(){
+  static getArticleTypeNVPair(dontneedBlank){
+
+    const articleDefArr = MasterDataManager.getArticleTypeDefArr()
+    let arr =
+      articleDefArr.map(type=> {
+        return {
+          value: type,
+          name: constants.ARTICLE_TYPE_NAME[type]
+        }
+      })
+
+    if(!dontneedBlank){
+      arr.unshift(MasterDataManager.BLANK_VALUE)
+    }
+
+    return arr
+  }
+  static getArticleTypeDefArr(){
 
     let arr = [
       constants.ARTICLE_TYPE.MAINTAINANCE,
@@ -39,24 +56,19 @@ export default class MasterDataManager{
       constants.ARTICLE_TYPE.EVENT,
       constants.ARTICLE_TYPE.MEMO
     ]
-      .map(type=> {
-        return {
-          value: type,
-          name: constants.ARTICLE_TYPE_NAME[type]
-        }
-      })
-
-    arr.unshift(MasterDataManager.BLANK_VALUE)
 
     return arr
   }
+
   static getParts(params){
     let arr = (constants.PARTS_TYPE || []).slice()
     arr.unshift(MasterDataManager.BLANK_VALUE)
 
     return arr
   }
+  
   static getTags(params){
-
+    const arr = LocalStorageManager.getDataAll(constants.LOCAL_STORAGE_NAME.TAG_LIST)
+    return arr
   }
 }

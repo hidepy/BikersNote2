@@ -39,7 +39,9 @@ export default class CommonFunc{
       try{
 
         if(!params){
-          params = {}
+          params = {
+            destinationType: window.Camera.DestinationType.FILE_URI
+          }
         }
 
         navigator.camera.getPicture(
@@ -54,8 +56,6 @@ export default class CommonFunc{
             resolve(base64img)
           },
           function(err){
-              alert("error");
-              console.log(err)
               reject(err)
           },
           {

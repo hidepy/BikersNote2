@@ -11,6 +11,8 @@ import ArticleDef from "../../data-definition/Article"
 import MachineDef from "../../data-definition/Machine"
 import MasterDef from "../../data-definition/Machine"
 
+import $ from "jquery"
+
 export default class HeaderPage extends Component {
 
   static key = "HeaderPage"
@@ -28,11 +30,21 @@ export default class HeaderPage extends Component {
     const searchConditionDef =
       defObj.getDefinition()
         .filter(v=> !!v.searchType)
+        .filter(v=> {
+          // 固定検索フラグがfalseの場合はfilter1個で終了
+          if(!this.props.params.fixSearchCondition || !this.props.params.searchCondition){
+            return true
+          }
+
+          // 固定検索の場合は、指定されている内容のみ画面表示するように絞り込み
+          return this.props.params.searchCondition[v.propName] !== undefined
+        })
 
     this.state = {
       searchConditionDef: searchConditionDef,
       isSearchConditionAreaShown: true,
       list: [],
+      loopcnt: 0
     }
 
     // 現在の検索条件保持用 現在選択値を保持しておくためにvalueプロパティを追加
@@ -40,8 +52,9 @@ export default class HeaderPage extends Component {
       searchConditionDef
         .slice()
         .map(v=>{
+
           let additionalProp = {
-            value: ""
+            value: !!this.props.params.searchCondition && this.props.params.searchCondition[v.propName] ? this.props.params.searchCondition[v.propName] : ""
           }
 
           if(v.searchType === "date") additionalProp["value2"] = ""
@@ -52,6 +65,8 @@ export default class HeaderPage extends Component {
           }
         })
 
+console.log(this.currentSearchCondition)
+
     this.onListItemClick = this.onListItemClick.bind(this)
     this.onPlusButtonClick = this.onPlusButtonClick.bind(this)
     this.toggleSearchConditionArea = this.toggleSearchConditionArea.bind(this)
@@ -61,14 +76,46 @@ export default class HeaderPage extends Component {
 
   // 画面表示直前に、前画面から受け取ったパラメータでリストを検索する
   componentWillMount(){
+    console.log("【componentWillMount】")
     // リストを検索する
     this.props.searchItems({
       type: this.props.params.listType,
     })
+  }
 
+  componentDidMount(){
+console.log("【componentDidMount】")
+    if(this.props.params.searchCondition){
+
+      const SEARCH_ITEM_PREFIX = "search-"
+
+      this.state.searchConditionDef.forEach(v=> {
+
+        // 検索条件に値がセットされていなければ次へ
+        if(!this.props.params.searchCondition[v.propName]) return
+
+        const condVal = this.props.params.searchCondition[v.propName]
+
+        if(v.searchType === "selection"){
+          document.querySelector("[name=" + SEARCH_ITEM_PREFIX + v.ref + "]").value = condVal
+
+          $("[name=" + SEARCH_ITEM_PREFIX + v.ref + "]").trigger("onchage")
+        }
+        // 検索タイプがあいまい検索の場合
+        else if(v.searchType === "fuzzy"){
+          document.querySelector("#" + SEARCH_ITEM_PREFIX + v.ref).value = condVal
+        }
+        // 検索タイプが日付の場合
+        else if(v.searchType === "date"){
+          // 特に考慮なし...いまのところ 大変なんで
+        }
+
+      })
+    }
   }
 
   componentWillReceiveProps(nextProps){
+console.log("【componentWillReceiveProps】")
     if(nextProps.HeaderPage.generalList == this.props.HeaderPage.generalList){
       return
     }
@@ -76,7 +123,10 @@ export default class HeaderPage extends Component {
     this.setState({
       list: nextProps.HeaderPage.generalList
     })
+
+    this.filterList(nextProps.HeaderPage.generalList)
   }
+
 
   // 詳細ページの保存成功時コールバック
   onDetailPageSaveSuccessCallback(){
@@ -103,7 +153,7 @@ export default class HeaderPage extends Component {
     })
   }
 
-  // リスト要素クリック時ハンドら
+  // リスト要素クリック時ハンドラ
   onListItemClick(event, i){
 
     // 選択された要素を取得
@@ -116,6 +166,7 @@ export default class HeaderPage extends Component {
       title: '詳細',
       params: {
         selectedItem: item,
+        mytestparam: "yes",
         listType: this.props.params.listType,
         onSaveSuccessCallback: this.onDetailPageSaveSuccessCallback,
       }
@@ -140,6 +191,7 @@ export default class HeaderPage extends Component {
       ; // 境界外なら処理対象外
     }
     else{
+
       // 正常インデックスなら
       let updPropName = "value"
 
@@ -157,8 +209,15 @@ export default class HeaderPage extends Component {
     }
 
     // 要素の絞込みを行う
+    this.filterList(this.props.HeaderPage.generalList)
+
+  }
+
+  // targetListに画面表示用のリストをセットする
+  filterList(targetList){
+
     const filterdList =
-      this.props.HeaderPage.generalList
+      (targetList || [])
         .filter((v)=> {
           // 検索条件全てチェック
           for(let i = 0; i < this.currentSearchCondition.length; i++){
@@ -169,8 +228,11 @@ export default class HeaderPage extends Component {
             // 種別がdateの場合、from-toのbetween検索する
             if(condVal.searchType === "date"){
               // 日付の場合は範囲選択
-              const fromCheck = !!condVal.value  ? (condVal.value  <= v[changedDef.propName]) : true
-              const toCheck   = !!condVal.value2 ? (condVal.value2 <= v[changedDef.propName]) : true
+              //const fromCheck = !!condVal.value  ? (condVal.value  <= v[changedDef.propName]) : true
+              //const toCheck   = !!condVal.value2 ? (condVal.value2 <= v[changedDef.propName]) : true
+              const fromCheck = !!condVal.value  ? (condVal.value  <= v[condVal.propName]) : true
+              const toCheck   = !!condVal.value2 ? (condVal.value2 <= v[condVal.propName]) : true
+
               //return fromCheck && toCheck
               if(!(fromCheck && toCheck)){
                 console.log("日付チェックヒットなしにつき対象外")
@@ -185,7 +247,7 @@ export default class HeaderPage extends Component {
               // あいまい検索
               if(condVal.searchType === "fuzzy"){
                 // あいまい検索の場合は、文字列が存在するかを検査
-                if(v[changedDef.propName].indexOf(val) < 0){
+                if(v[condVal.propName].indexOf(condVal["value"]) < 0){
                   return false
                 }
               }
@@ -206,7 +268,6 @@ export default class HeaderPage extends Component {
     this.setState({
       list: filterdList
     })
-
   }
 
   render() {
@@ -223,7 +284,7 @@ export default class HeaderPage extends Component {
       // 検索タイプがあいまい検索の場合
       else if(v.searchType === "fuzzy"){
         return (
-          <ons-input type="text" ref={SEARCH_ITEM_PREFIX + v.ref} onChange={(event)=> this.onSearchConditionChange(v, event.target.value)} />
+          <ons-input type="text" id={SEARCH_ITEM_PREFIX + v.ref} ref={SEARCH_ITEM_PREFIX + v.ref} onChange={(event)=> this.onSearchConditionChange(v, event.target.value)} />
         )
       }
       // 検索タイプが日付の場合
@@ -254,8 +315,8 @@ export default class HeaderPage extends Component {
           className={
             "animate-element searchConditionArea "
             + (this.state.isSearchConditionAreaShown ? "" : "searchConditionArea-closed ")
-            + ((this.props.params.withSearchCondition ? "" : "hidden"))
-            + ("searchConditionAreaState is " + this.state.isSearchConditionAreaShown)
+            + ((this.props.params.withSearchCondition ? "" : "searchConditionArea-closed "))
+            + ((this.props.params.fixSearchCondition ? " searchConditionArea-disabled" : ""))
           }
         >
           {
@@ -284,9 +345,19 @@ export default class HeaderPage extends Component {
         </section>
 
 
-        <RoundButton onButtonClick={this.onPlusButtonClick} className={((this.props.params.withSearchCondition ? "" : "hidden"))} />
+        <RoundButton
+          onButtonClick={this.onPlusButtonClick}
+          className={((this.props.params.withSearchCondition ? "" : "hidden"))}
+        />
 
-        <RoundButton iconName="fa-times" customStyle={{top: "8px"}} onButtonClick={this.toggleSearchConditionArea } />
+        <RoundButton
+          iconName={(this.props.params.withSearchCondition && this.state.isSearchConditionAreaShown) ? "fa-angle-up" : "fa-angle-down"}
+          customStyle={{
+            top: "8px",
+            display: (!!this.props.params.fixSearchCondition || ((this.state.searchConditionDef || []).length <= 0) ? "none" : "inherit"),
+          }}
+          onButtonClick={this.toggleSearchConditionArea }
+        />
 
       </Page>
 
