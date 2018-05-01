@@ -115,7 +115,7 @@ console.log(route.params)
   render(){
     return (
       <Splitter>
-        <SplitterSide side='right' width={220} collapse={true} swipeable={true} isOpen={this.state.isMenuOpen} onClose={this.hide.bind(this)} onOpen={this.show.bind(this)}>
+        <SplitterSide side='left' width={220} collapse={true} swipeable={true} isOpen={this.state.isMenuOpen} onClose={this.hide.bind(this)} onOpen={this.show.bind(this)}>
           <Page>
             <List>
               <ListItem key={HeaderPage.name + "_" + constants.PAGE_TYPE.BIKERS_LIST } onClick={this.loadPage.bind(HeaderPage, constants.PAGE_TYPE.BIKERS_LIST)}  tappable>記事一覧</ListItem>
