@@ -116,10 +116,14 @@ console.log("Components-> AppRoot-> renderPage")
 
       // 機体ページの場合 かつ 詳細ページの場合
       if(
-        (route.params.listType === constants.PAGE_TYPE.MACHINE_LIST)
-        && (route.component.key === "DetailPage")
+        /*(route.params.listType === constants.PAGE_TYPE.MACHINE_LIST)
+        && */(route.component.key === "DetailPage")
         && (route.params.selectedItem)
       ){
+
+        // パラメータを編集するeditorを挟む
+        this.props.editRouteParameter(constants.PAGE_TYPE.MACHINE_LIST, route.params.selectedItem, navigator)
+/*
         // 機体ダッシュボード画面に燃費, その他リストの情報を詰め込む
         route.params.selectedItem.nenpi_list = [
           {key: "1524813441112", litter: 10, distance: 240, date: "2018-04-01"},
@@ -163,9 +167,9 @@ console.log("Components-> AppRoot-> renderPage")
                 }
               }
             )
-
           }
         }
+*/
       }
     }
 

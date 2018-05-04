@@ -150,6 +150,8 @@ export default class DetailPage extends Component {
         // 入力定義分だけループして組み立てる
         this.state.inputItemDef.forEach(v=> {
 
+          if(v.dispOnly) return
+
           // imgの場合, 対象画像を全て抜き出してsrcをデータとして保存
           if(v.inputType == "img"){
             item[v.propName] =
@@ -157,8 +159,6 @@ export default class DetailPage extends Component {
                 .map(elImg=> elImg.getAttribute("src"))
           }
           else if((v.inputType == "select") || (v.inputType == "input-select")){
-            console.log(v.ref)
-
             item[v.propName] = document.querySelector("[name=" + v.ref + "]").value
           }
           else{
