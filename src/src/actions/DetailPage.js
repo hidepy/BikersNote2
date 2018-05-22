@@ -11,6 +11,8 @@ export default{
 
       item.key = key
 
+      item.update_timestamp = (new Date()).toLocaleString()
+
       LocalStorageManager.setData(storageKey, item, item.key)
 
       //dispatch(receiveItems(list, dispDef))

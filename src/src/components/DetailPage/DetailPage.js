@@ -349,9 +349,12 @@ export default class DetailPage extends Component {
                 <div>
                   <Button onClick={
                     ()=>
-                      CommonFunc.getPicture({targetWidth: window.screen.width * 3})
+                      CommonFunc.getPicture({
+                        //targetWidth: window.screen.width * 3,
+                        destinationType: window.Camera.DestinationType.FILE_URI,
+                      })
                         .then(base64img=> {
-                          alert("select ok!!")
+                          //alert("select ok!!")
                           console.log("in CommonFunc.getPicture callback")
                           //v.values.push("data:image/jpeg;base64," + base64img)
                           //v.values.push(base64img)
@@ -375,7 +378,7 @@ export default class DetailPage extends Component {
                   {
                     (v.tmpImages || []).map((url, j)=> {
                     //(this.state.temprul || []).map(url=> {
-                      //console.log(url)
+
                       return (
                         <div key={j} id={"images-" + v.ref + "-" + j} style={{position: "relative"}}>
                           <img src={url} width={v.width || defaultWidth} height={v.height || defaultHeight} />
@@ -386,7 +389,7 @@ export default class DetailPage extends Component {
                             this.setState({
                               inputItemDef: updatedDef,
                             })
-                          }} iconName="fa-trash" />
+                          }} iconName="fa-trash" customStyle={{position: "absolute", }} />
                         </div>
                       )
                     })

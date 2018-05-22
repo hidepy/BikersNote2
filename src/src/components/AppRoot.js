@@ -122,7 +122,7 @@ console.log("Components-> AppRoot-> renderPage")
       ){
 
         // パラメータを編集するeditorを挟む
-        this.props.editRouteParameter(constants.PAGE_TYPE.MACHINE_LIST, route.params.selectedItem, navigator)
+        route.params.selectedItem = this.props.editRouteParameter(constants.PAGE_TYPE.MACHINE_LIST, route.params.selectedItem, navigator)
 /*
         // 機体ダッシュボード画面に燃費, その他リストの情報を詰め込む
         route.params.selectedItem.nenpi_list = [

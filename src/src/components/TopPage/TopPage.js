@@ -222,7 +222,6 @@ export default class TopPage extends Component {
             items={this.props.TopPage.newArticles}
             dispDef={this.props.TopPage.newArticlesDispDef}
             onItemClick={this.onBikersListItemClick}
-            clsName="ArticleList"
           />
         </section>
 

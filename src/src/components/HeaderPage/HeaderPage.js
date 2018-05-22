@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 //import ons from "onsenui"
-import  {Page, Toolbar, BackButton, Row, Col} from 'react-onsenui'
+import  {Input, Page, Toolbar, BackButton, Row, Col} from 'react-onsenui'
 
 import BikersList from "../Commons/BikersList"
 import RoundButton from "../Commons/RoundButton"
@@ -64,8 +64,6 @@ export default class HeaderPage extends Component {
             ...additionalProp,
           }
         })
-
-console.log(this.currentSearchCondition)
 
     this.onListItemClick = this.onListItemClick.bind(this)
     this.onPlusButtonClick = this.onPlusButtonClick.bind(this)
@@ -231,7 +229,7 @@ console.log("【componentWillReceiveProps】")
               //const fromCheck = !!condVal.value  ? (condVal.value  <= v[changedDef.propName]) : true
               //const toCheck   = !!condVal.value2 ? (condVal.value2 <= v[changedDef.propName]) : true
               const fromCheck = !!condVal.value  ? (condVal.value  <= v[condVal.propName]) : true
-              const toCheck   = !!condVal.value2 ? (condVal.value2 <= v[condVal.propName]) : true
+              const toCheck   = !!condVal.value2 ? (condVal.value2 >= v[condVal.propName]) : true
 
               //return fromCheck && toCheck
               if(!(fromCheck && toCheck)){
@@ -283,17 +281,18 @@ console.log("【componentWillReceiveProps】")
       }
       // 検索タイプがあいまい検索の場合
       else if(v.searchType === "fuzzy"){
+        console.log("in fuzzy input")
         return (
-          <ons-input type="text" id={SEARCH_ITEM_PREFIX + v.ref} ref={SEARCH_ITEM_PREFIX + v.ref} onChange={(event)=> this.onSearchConditionChange(v, event.target.value)} />
+          <Input type="text" id={SEARCH_ITEM_PREFIX + v.ref} ref={SEARCH_ITEM_PREFIX + v.ref} onChange={(event)=> this.onSearchConditionChange(v, event.target.value)} />
         )
       }
       // 検索タイプが日付の場合
       else if(v.searchType === "date"){
         return (
           <div>
-            <ons-input type="date" ref={SEARCH_ITEM_PREFIX + v.ref + "-from"} onChange={(event)=> this.onSearchConditionChange(v, event.target.value, {fromToType: "from"})} />
+            <Input type="date" ref={SEARCH_ITEM_PREFIX + v.ref + "-from"} onChange={(event)=> this.onSearchConditionChange(v, event.target.value, {fromToType: "from"})} />
             ～
-            <ons-input type="date" ref={SEARCH_ITEM_PREFIX + v.ref + "-to"  } onChange={(event)=> this.onSearchConditionChange(v, event.target.value, {fromToType: "to"})} />
+            <Input type="date" ref={SEARCH_ITEM_PREFIX + v.ref + "-to"  } onChange={(event)=> this.onSearchConditionChange(v, event.target.value, {fromToType: "to"})} />
           </div>
         )
       }

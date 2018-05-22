@@ -78,8 +78,6 @@ function mapDispatchToProps(dispatch){
         articles
           .forEach(v=> {
 
-console.log(v)
-
             if(articleCount[v.type] === undefined) return
 
             articleCount[v.type] += 1

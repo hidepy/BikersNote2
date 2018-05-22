@@ -1,6 +1,7 @@
 import LocalStorageManager from "../utils/LocalStorageManager"
 import constants from "../utils/constants"
 import CommonFunc from "../utils/CommonFunc"
+import BikersHeaderItem from "../components/Commons/BikersHeaderItem"
 
 function receiveItems(list, dispDef){
   return {
@@ -36,7 +37,8 @@ export default{
           })
 
         // type, title, date, comment, img(multi), url, place, price, tag, part, time, spots, distance, litter, litter_price
-        dispDef = {left: "type_name", center: "title", right: "timestamp"}
+        //dispDef = {left: "type_name", center: "title", right: "timestamp"}
+        dispDef = {left: BikersHeaderItem}
       }
       else if(params.type === constants.PAGE_TYPE.MACHINE_LIST){
         //list = LocalStorageManager.getDataAll(constants.LOCAL_STORAGE_NAME.MACHINE_LIST)

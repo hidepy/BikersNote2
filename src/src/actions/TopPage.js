@@ -1,6 +1,7 @@
 import constants from "../utils/constants"
 import CommonFunc from "../utils/CommonFunc"
 import LocalStorageManager from "../utils/LocalStorageManager"
+import BikersHeaderItem from "../components/Commons/BikersHeaderItem"
 
 function receiveMachines(list){
   return {
@@ -45,7 +46,8 @@ export default{
           }
         })
 
-      const dispDef = {left: "type_name", center: "title", right: "timestamp"}
+      //const dispDef = {left: "type_name", center: "title", right: "timestamp"}
+      const dispDef = {left: BikersHeaderItem}
 
       dispatch(receiveItems(list, dispDef))
     }

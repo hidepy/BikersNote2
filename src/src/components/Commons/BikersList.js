@@ -34,6 +34,13 @@ export default class BikersList extends Component {
     })
 
     function convDispVal(row, propName){
+
+      if(!propName) return null
+
+      if((typeof propName === "object") || (typeof propName === "function")){
+        return React.createElement(propName, {row: row})
+      }
+
       const splitted = propName.split(":")
 
       // 表示種別指定ありの場合
@@ -44,7 +51,11 @@ export default class BikersList extends Component {
 
         switch(tagType){
           case "IMG":{
-            return <img src={row[propName_s]} style={{height: "44px", maxWidth: "44px"}}/>
+            return (
+              <div>
+                <img src={row[propName_s]} style={{height: "44px", maxWidth: "44px"}}/>
+              </div>
+            )
           }
 
           default: {
@@ -71,6 +82,9 @@ export default class BikersList extends Component {
             </div>
             <div className='right'>
               {convDispVal(row, this.props.dispDef["right"])}
+            </div>
+            <div className="footer">
+              <span className="footer-timestamp">{row["update_timestamp"]}</span>
             </div>
           </ListItem>
         )}
